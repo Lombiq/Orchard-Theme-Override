@@ -2,7 +2,7 @@ Name: Theme Override
 AntiForgery: enabled
 Author: Piedone
 Website: http://themeoverride.codeplex.com
-Version: 1.0
+Version: 0.5
 OrchardVersion: 1.4
 Description: Adds configuration to the admin page that lets override the styling of the current theme
 Features:
