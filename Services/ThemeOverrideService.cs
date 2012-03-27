@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Orchard.Settings;
-using Piedone.ThemeOverride.Models;
 using Orchard.ContentManagement;
 using Orchard.FileSystems.Media;
 using System.IO;
@@ -35,10 +34,13 @@ namespace Piedone.ThemeOverride.Services
             {
             }
 
-            using (var stream = _storageProvider.CreateFile(_stylePath).OpenWrite())
+            if (!String.IsNullOrEmpty(css))
             {
-                var bytes = Encoding.UTF8.GetBytes(css);
-                stream.Write(bytes, 0, bytes.Length);
+                using (var stream = _storageProvider.CreateFile(_stylePath).OpenWrite())
+                {
+                    var bytes = Encoding.UTF8.GetBytes(css);
+                    stream.Write(bytes, 0, bytes.Length);
+                } 
             }
         }
 
