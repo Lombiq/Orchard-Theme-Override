@@ -10,5 +10,6 @@ namespace Piedone.ThemeOverride.Services
     {
         void SaveStyle(string css);
         string GetStyle();
+        bool TryGetStylePublicUrl(out string publicUrl);
     }
 }

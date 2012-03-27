@@ -9,3 +9,5 @@ Features:
     Piedone.ThemeOverride:
 		Name: Theme Override
         Description: Adds configuration to the admin page that lets override the styling of the current theme
+		Category: Design
+		Dependencies: Orchard.Themes

@@ -5,28 +5,75 @@ using System.Text;
 using Orchard.Settings;
 using Piedone.ThemeOverride.Models;
 using Orchard.ContentManagement;
+using Orchard.FileSystems.Media;
+using System.IO;
 
 namespace Piedone.ThemeOverride.Services
 {
+    /// <remarks>
+    /// The oddities with file handling here are because there is currently no existence check in IStorageProvider: http://orchard.codeplex.com/workitem/18279
+    /// </remarks>
     public class ThemeOverrideService : IThemeOverrideService
     {
-        private readonly ISiteService _siteService;
+        private readonly IStorageProvider _storageProvider;
+        private const string _rootPath = "ThemeOverride/";
+        private const string _stylePath = _rootPath + "Style.css";
 
         public ThemeOverrideService(
-            ISiteService siteService)
+            IStorageProvider storageProvider)
         {
-            _siteService = siteService;
+            _storageProvider = storageProvider;
         }
 
         public void SaveStyle(string css)
         {
-            var settings = _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
-            settings.Style = css;
+            try
+            {
+                _storageProvider.DeleteFile(_stylePath);
+            }
+            catch (Exception)
+            {
+            }
+
+            using (var stream = _storageProvider.CreateFile(_stylePath).OpenWrite())
+            {
+                var bytes = Encoding.UTF8.GetBytes(css);
+                stream.Write(bytes, 0, bytes.Length);
+            }
         }
 
         public string GetStyle()
         {
-            return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>().Style;
+            try
+            {
+                var file = _storageProvider.GetFile(_stylePath);
+                using (var stream = file.OpenRead())
+                {
+                    using (var streamReader = new StreamReader(stream))
+                    {
+                        return streamReader.ReadToEnd();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+        public bool TryGetStylePublicUrl(out string publicUrl)
+        {
+            try
+            {
+                _storageProvider.GetFile(_stylePath);
+                publicUrl = _storageProvider.GetPublicUrl(_stylePath);
+                return true;
+            }
+            catch (Exception)
+            {
+                publicUrl = "";
+                return false;
+            }
         }
     }
 }
