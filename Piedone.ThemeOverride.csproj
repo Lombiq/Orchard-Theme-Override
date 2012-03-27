@@ -81,10 +81,6 @@
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Controllers\AdminController.cs" />
-    <Compile Include="Handlers\ThemeOverrideSettingsPartHandler.cs" />
-    <Compile Include="Migrations.cs" />
-    <Compile Include="Models\ThemeOverrideSettingsPart.cs" />
-    <Compile Include="Models\ThemeOverrideSettingsPartRecord.cs" />
     <Compile Include="Services\IThemeOverrideService.cs" />
     <Compile Include="Services\ThemeOverrideService.cs" />
     <Compile Include="ThemeOverrideFilter.cs" />
