@@ -15,19 +15,13 @@ namespace Piedone.ThemeOverride
     {
         private readonly IThemeOverrideService _themeOverrideService;
         private readonly IResourceManager _resourceManager;
-        private readonly IWorkContextAccessor _workContextAccessor;
-        private readonly dynamic _shapeFactory;
 
         public ThemeOverrideFilter(
             IThemeOverrideService themeOverrideService,
-            IResourceManager resourceManager,
-            IWorkContextAccessor workContextAccessor,
-            IShapeFactory shapeFactory)
+            IResourceManager resourceManager)
         {
             _themeOverrideService = themeOverrideService;
             _resourceManager = resourceManager;
-            _workContextAccessor = workContextAccessor;
-            _shapeFactory = shapeFactory;
         }
 
         public void OnResultExecuting(ResultExecutingContext filterContext)
@@ -38,15 +32,7 @@ namespace Piedone.ThemeOverride
             string styleUrl;
             if (_themeOverrideService.TryGetStylePublicUrl(out styleUrl))
             {
-                var resourceSettings = _resourceManager.Include("stylesheet", styleUrl, styleUrl);
-                var resource = _resourceManager.FindResource(resourceSettings);
-                _resourceManager.NotRequired("stylesheet", resource.Name);
-
-                _workContextAccessor.GetContext(filterContext).Layout.Head.Add(_shapeFactory.Style(
-                                    Url: resource.Url,
-                                    Condition: resourceSettings.Condition,
-                                    Resource: resource,
-                                    TagAttributes: resourceSettings.Attributes), "999");
+                _resourceManager.RegisterLink(new LinkEntry() { Href = styleUrl, Rel = "stylesheet", Type = "text/css" });
             }
         }
 
