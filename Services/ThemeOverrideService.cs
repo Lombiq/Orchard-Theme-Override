@@ -6,6 +6,7 @@ using Orchard.Settings;
 using Orchard.ContentManagement;
 using Orchard.FileSystems.Media;
 using System.IO;
+using Orchard.Exceptions;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -30,8 +31,9 @@ namespace Piedone.ThemeOverride.Services
             {
                 _storageProvider.DeleteFile(_stylePath);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.IsFatal()) throw;
             }
 
             if (!String.IsNullOrEmpty(css))
@@ -57,8 +59,10 @@ namespace Piedone.ThemeOverride.Services
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.IsFatal()) throw;
+
                 return "";
             }
         }
@@ -71,8 +75,10 @@ namespace Piedone.ThemeOverride.Services
                 publicUrl = _storageProvider.GetPublicUrl(_stylePath);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                if (ex.IsFatal()) throw;
+
                 publicUrl = "";
                 return false;
             }
