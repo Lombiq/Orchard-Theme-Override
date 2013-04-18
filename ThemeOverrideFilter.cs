@@ -31,6 +31,9 @@ namespace Piedone.ThemeOverride
             // Don't run on admin
             if (Orchard.UI.Admin.AdminFilter.IsApplied(filterContext.RequestContext)) return;
 
+            // Should only run on a full view rendering result
+            if (!(filterContext.Result is ViewResult)) return;
+
             string styleUrl;
             if (_themeOverrideService.TryGetStylePublicUrl(out styleUrl))
             {
