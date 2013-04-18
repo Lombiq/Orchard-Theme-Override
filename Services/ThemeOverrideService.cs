@@ -27,14 +27,7 @@ namespace Piedone.ThemeOverride.Services
 
         public void SaveStyle(string css)
         {
-            try
-            {
-                _storageProvider.DeleteFile(_stylePath);
-            }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
-            }
+            if (_storageProvider.FileExists(_stylePath)) _storageProvider.DeleteFile(_stylePath);
 
             if (!String.IsNullOrEmpty(css))
             {
@@ -42,16 +35,15 @@ namespace Piedone.ThemeOverride.Services
                 {
                     var bytes = Encoding.UTF8.GetBytes(css);
                     stream.Write(bytes, 0, bytes.Length);
-                } 
+                }
             }
         }
 
         public string GetStyle()
         {
-            try
+            if (_storageProvider.FileExists(_stylePath))
             {
-                var file = _storageProvider.GetFile(_stylePath);
-                using (var stream = file.OpenRead())
+                using (var stream = _storageProvider.GetFile(_stylePath).OpenRead())
                 {
                     using (var streamReader = new StreamReader(stream))
                     {
@@ -59,29 +51,20 @@ namespace Piedone.ThemeOverride.Services
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
 
-                return "";
-            }
+            return string.Empty;
         }
 
         public bool TryGetStylePublicUrl(out string publicUrl)
         {
-            try
+            if (_storageProvider.FileExists(_stylePath))
             {
-                _storageProvider.GetFile(_stylePath);
                 publicUrl = _storageProvider.GetPublicUrl(_stylePath);
                 return true;
             }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
 
-                publicUrl = "";
-                return false;
-            }
+            publicUrl = string.Empty;
+            return false;
         }
     }
 }
