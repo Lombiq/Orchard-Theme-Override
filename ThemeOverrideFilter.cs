@@ -16,6 +16,7 @@ namespace Piedone.ThemeOverride
         private readonly IThemeOverrideService _themeOverrideService;
         private readonly IResourceManager _resourceManager;
 
+
         public ThemeOverrideFilter(
             IThemeOverrideService themeOverrideService,
             IResourceManager resourceManager)
@@ -23,6 +24,7 @@ namespace Piedone.ThemeOverride
             _themeOverrideService = themeOverrideService;
             _resourceManager = resourceManager;
         }
+
 
         public void OnResultExecuting(ResultExecutingContext filterContext)
         {

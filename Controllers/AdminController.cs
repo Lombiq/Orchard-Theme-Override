@@ -17,6 +17,7 @@ namespace Piedone.ThemeOverride.Controllers
 
         public Localizer T { get; set; }
 
+
         public AdminController(
             IThemeOverrideService themeOverrideService,
             INotifier notifier)
@@ -26,6 +27,7 @@ namespace Piedone.ThemeOverride.Controllers
 
             T = NullLocalizer.Instance;
         }
+
 
         public ActionResult Index()
         {
