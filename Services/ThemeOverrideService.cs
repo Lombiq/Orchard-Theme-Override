@@ -18,7 +18,7 @@ namespace Piedone.ThemeOverride.Services
         private readonly IStorageProvider _storageProvider;
 
         private const string RootPath = "ThemeOverride/";
-        private const string StylePath = RootPath + "Style.css";
+        private const string StylePath = RootPath + "OverridingStyles.css";
 
 
         public ThemeOverrideService(IStorageProvider storageProvider)
