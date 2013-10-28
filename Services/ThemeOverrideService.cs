@@ -16,42 +16,36 @@ namespace Piedone.ThemeOverride.Services
     public class ThemeOverrideService : IThemeOverrideService
     {
         private readonly IStorageProvider _storageProvider;
-        private const string _rootPath = "ThemeOverride/";
-        private const string _stylePath = _rootPath + "Style.css";
 
-        public ThemeOverrideService(
-            IStorageProvider storageProvider)
+        private const string RootPath = "ThemeOverride/";
+        private const string StylePath = RootPath + "OverridingStyles.css";
+
+
+        public ThemeOverrideService(IStorageProvider storageProvider)
         {
             _storageProvider = storageProvider;
         }
 
+
         public void SaveStyle(string css)
         {
-            try
-            {
-                _storageProvider.DeleteFile(_stylePath);
-            }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
-            }
+            if (_storageProvider.FileExists(StylePath)) _storageProvider.DeleteFile(StylePath);
 
             if (!String.IsNullOrEmpty(css))
             {
-                using (var stream = _storageProvider.CreateFile(_stylePath).OpenWrite())
+                using (var stream = _storageProvider.CreateFile(StylePath).OpenWrite())
                 {
                     var bytes = Encoding.UTF8.GetBytes(css);
                     stream.Write(bytes, 0, bytes.Length);
-                } 
+                }
             }
         }
 
         public string GetStyle()
         {
-            try
+            if (_storageProvider.FileExists(StylePath))
             {
-                var file = _storageProvider.GetFile(_stylePath);
-                using (var stream = file.OpenRead())
+                using (var stream = _storageProvider.GetFile(StylePath).OpenRead())
                 {
                     using (var streamReader = new StreamReader(stream))
                     {
@@ -59,29 +53,20 @@ namespace Piedone.ThemeOverride.Services
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
 
-                return "";
-            }
+            return string.Empty;
         }
 
         public bool TryGetStylePublicUrl(out string publicUrl)
         {
-            try
+            if (_storageProvider.FileExists(StylePath))
             {
-                _storageProvider.GetFile(_stylePath);
-                publicUrl = _storageProvider.GetPublicUrl(_stylePath);
+                publicUrl = _storageProvider.GetPublicUrl(StylePath);
                 return true;
             }
-            catch (Exception ex)
-            {
-                if (ex.IsFatal()) throw;
 
-                publicUrl = "";
-                return false;
-            }
+            publicUrl = string.Empty;
+            return false;
         }
     }
 }
