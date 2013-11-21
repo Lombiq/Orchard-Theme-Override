@@ -10,9 +10,6 @@ using Orchard.Exceptions;
 
 namespace Piedone.ThemeOverride.Services
 {
-    /// <remarks>
-    /// The oddities with file handling here are because there is currently no existence check in IStorageProvider: http://orchard.codeplex.com/workitem/18279
-    /// </remarks>
     public class ThemeOverrideService : IThemeOverrideService
     {
         private readonly IStorageProvider _storageProvider;
