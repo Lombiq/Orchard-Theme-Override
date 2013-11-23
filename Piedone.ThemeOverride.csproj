@@ -59,6 +59,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Styles\theme-override-admin.css">
+      <DependentUpon>theme-override-admin.less</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Views\Web.config" />
     <Content Include="Scripts\Web.config" />
@@ -88,6 +91,7 @@
     <Compile Include="ViewModels\EditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Styles\theme-override-admin.less" />
     <None Include="Views\ThemeOverride.StyleInclusion.cshtml" />
   </ItemGroup>
   <PropertyGroup>

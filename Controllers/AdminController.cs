@@ -31,17 +31,17 @@ namespace Piedone.ThemeOverride.Controllers
 
         public ActionResult Index()
         {
-            return View(new EditorViewModel { Style = _themeOverrideService.GetStyle() });
+            return View(new EditorViewModel { StyleOverride = _themeOverrideService.GetStyle() });
         }
 
         [HttpPost]
         public ActionResult Index(EditorViewModel viewModel)
         {
-            _themeOverrideService.SaveStyle(viewModel.Style);
+            _themeOverrideService.SaveStyle(viewModel.StyleOverride);
 
             _notifier.Information(T("The settings have been saved."));
 
-            return View(viewModel);
+            return RedirectToAction("Index");
         }
     }
 }

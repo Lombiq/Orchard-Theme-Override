@@ -1,57 +1,40 @@
 ﻿@model Piedone.ThemeOverride.ViewModels.EditorViewModel
+
+@{
+    Layout.Title = T("Theme Override Settings");
+    
+    Style.Include("theme-override-admin.css");
+    Script.Require("AceEditor.NoConflict").AtFoot();
+}
+
 @using (Html.BeginFormAntiForgeryPost())
 {
+    @Html.HiddenFor(m => m.StyleOverride)
+
     <fieldset>
         <legend>@T("Theme Override Settings")</legend>
-        @Html.LabelFor(m => m.Style, T("Styling (css)"))
-        @Html.TextAreaFor(m => m.Style, new { onkeydown = "return interceptTabs(event, this);" })
-        <span class="hint">@T("This stylesheet will be included last, so you can override any styling. You can use tabs.")</span>
+        @Html.LabelFor(m => m.StyleOverride, T("Styling (css)"))
+        <div id="theme-override-style-override-editor">@Model.StyleOverride</div>
+        <span class="hint">@T("This stylesheet will be included last, so you can override any styling.")</span>
     </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit" name="submit.Save" value="submit.Save">@T("Save")</button>
     </fieldset>
 }
+
 @using (Script.Foot())
 {
-    // Stolen from Taxonomies
     <script type="text/javascript">
-        function insertAtCursor(myField, myValue) {
-            //IE support
-            if (document.selection) {
-                myField.focus();
-                sel = document.selection.createRange();
-                sel.text = myValue;
-            }
+        (function ($) {
+            $(function () {
+                var styleEditor = ace.edit("theme-override-style-override-editor");
+                styleEditor.getSession().setMode("ace/mode/css");
 
-            //MOZILLA/NETSCAPE support
-            else if (myField.selectionStart || myField.selectionStart == '0') {
-                var startPos = myField.selectionStart;
-                var endPos = myField.selectionEnd;
-                restoreTop = myField.scrollTop;
-
-                myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
-
-                myField.selectionStart = startPos + myValue.length;
-                myField.selectionEnd = startPos + myValue.length;
-
-                if (restoreTop > 0) {
-                    myField.scrollTop = restoreTop;
-                }
-            }
-            else {
-                myField.value += myValue;
-            }
-        }
-
-        function interceptTabs(evt, control) {
-            key = evt.keyCode ? evt.keyCode : evt.which ? evt.which : evt.charCode;
-            if (key == 9) {
-                insertAtCursor(control, '\t');
-                return false;
-            }
-            else {
-                return key;
-            }
-        } 
+                var $styleOverride = $("#@Html.FieldIdFor(m => m.StyleOverride)");
+                $($styleOverride[0].form).submit(function () {
+                    $styleOverride.val(styleEditor.getValue());
+                });
+            });
+        })(jQuery);
     </script>
 }
