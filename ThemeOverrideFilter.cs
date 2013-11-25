@@ -11,7 +11,7 @@ using Piedone.ThemeOverride.Services;
 
 namespace Piedone.ThemeOverride
 {
-    public class ThemeOverrideFilter : FilterProvider, IResultFilter
+    public class ThemeOverrideFilter : FilterProvider, IResultFilter, IActionFilter
     {
         private readonly IThemeOverrideService _themeOverrideService;
         private readonly IWorkContextAccessor _wca;
@@ -37,11 +37,21 @@ namespace Piedone.ThemeOverride
             // Should only run on a full view rendering result
             if (!(filterContext.Result is ViewResult)) return;
 
-            _wca.GetContext().Layout.Head.Insert(_shapeFactory.ThemeOverride_OverridesInclusion(Overrides: _themeOverrideService.GetOverrides()));
+            _wca.GetContext().Layout.Content.Add(_shapeFactory.ThemeOverride_OverridesInclusion(Overrides: _themeOverrideService.GetOverrides()));
         }
 
         public void OnResultExecuted(ResultExecutedContext filterContext)
         {
+        }
+
+        public void OnActionExecuted(ActionExecutedContext filterContext)
+        {
+
+        }
+
+        public void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (Orchard.UI.Admin.AdminFilter.IsApplied(filterContext.RequestContext)) return;
         }
     }
 }
