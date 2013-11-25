@@ -9,5 +9,9 @@ namespace Piedone.ThemeOverride.ViewModels
     {
         public string StylesheetUrl { get; set; }
         public string CustomStylesContent { get; set; }
+        public string HeadScriptUrl { get; set; }
+        public string CustomHeadScriptContent { get; set; }
+        public string FootScriptUrl { get; set; }
+        public string CustomFootScriptContent { get; set; }
     }
 }

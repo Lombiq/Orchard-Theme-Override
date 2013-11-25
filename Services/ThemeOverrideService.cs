@@ -8,6 +8,7 @@ using Orchard.FileSystems.Media;
 using System.IO;
 using Orchard.Exceptions;
 using Piedone.ThemeOverride.Models;
+using Orchard.UI.Resources;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -18,6 +19,8 @@ namespace Piedone.ThemeOverride.Services
 
         private const string RootPath = "ThemeOverride/";
         private const string CustomStylesPath = RootPath + "OverridingStyles.css";
+        private const string CustomHeadScriptPath = RootPath + "OverridingHeadScript.js";
+        private const string CustomFootScriptPath = RootPath + "OverridingFootScript.js";
 
 
         public ThemeOverrideService(IStorageProvider storageProvider, ISiteService siteService)
@@ -32,6 +35,7 @@ namespace Piedone.ThemeOverride.Services
             var part = GetPart();
 
             if (stylesheetUri != null) part.StylesheetUrl = stylesheetUri.ToString();
+            else part.StylesheetUrl = string.Empty;
 
             if (_storageProvider.FileExists(CustomStylesPath)) _storageProvider.DeleteFile(CustomStylesPath);
 
@@ -43,7 +47,40 @@ namespace Piedone.ThemeOverride.Services
                     stream.Write(bytes, 0, bytes.Length);
                 }
 
-                part.CustomStylesSaved = true;
+                part.CustomStylesIsSaved = true;
+            }
+        }
+
+        public void SaveScripts(Uri scriptUri, string customScript, ResourceLocation location)
+        {
+            var part = GetPart();
+
+            string customScriptPath;
+            if (location == ResourceLocation.Head)
+            {
+                customScriptPath = CustomHeadScriptPath;
+                if (scriptUri != null) part.HeadScriptUrl = scriptUri.ToString();
+                else part.HeadScriptUrl = string.Empty;
+            }
+            else
+            {
+                customScriptPath = CustomFootScriptPath;
+                if (scriptUri != null) part.FootScriptUrl = scriptUri.ToString();
+                else part.FootScriptUrl = string.Empty;
+            }
+
+            if (_storageProvider.FileExists(customScriptPath)) _storageProvider.DeleteFile(customScriptPath);
+
+            if (!String.IsNullOrEmpty(customScript))
+            {
+                using (var stream = _storageProvider.CreateFile(customScriptPath).OpenWrite())
+                {
+                    var bytes = Encoding.UTF8.GetBytes(customScript);
+                    stream.Write(bytes, 0, bytes.Length);
+                }
+
+                if (location == ResourceLocation.Head) part.CustomHeadScriptIsSaved = true;
+                else part.CustomFootScriptIsSaved = true;
             }
         }
 
@@ -53,29 +90,14 @@ namespace Piedone.ThemeOverride.Services
 
             var overrides = new Overrides();
 
-            if (!string.IsNullOrEmpty(part.StylesheetUrl) && Uri.IsWellFormedUriString(part.StylesheetUrl, UriKind.RelativeOrAbsolute))
-            {
-                overrides.StylesheetUri = new Uri(part.StylesheetUrl, Uri.IsWellFormedUriString(part.StylesheetUrl, UriKind.Absolute) ? UriKind.Absolute : UriKind.Relative);
-            }
+            overrides.StylesheetUri = CreateUri(part.StylesheetUrl);
+            overrides.CustomStyles = CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath);
 
-            if (part.CustomStylesSaved && _storageProvider.FileExists(CustomStylesPath))
-            {
-                overrides.CustomStyles = new CustomStyles
-                {
-                    UriFactory = new Lazy<Uri>(() => new Uri(_storageProvider.GetPublicUrl(CustomStylesPath), UriKind.Relative)),
-                    ContentFactory = new Lazy<string>(() =>
-                        {
-                            using (var stream = _storageProvider.GetFile(CustomStylesPath).OpenRead())
-                            {
-                                using (var streamReader = new StreamReader(stream))
-                                {
-                                    return streamReader.ReadToEnd();
-                                }
-                            }
-                        })
-                };
-            }
-            else overrides.CustomStyles = new CustomStyles();
+            overrides.HeadScriptUri = CreateUri(part.HeadScriptUrl);
+            overrides.CustomHeadScript = CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath);
+
+            overrides.FootScriptUri = CreateUri(part.FootScriptUrl);
+            overrides.CustomFootScript = CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath);
 
             return overrides;
         }
@@ -86,18 +108,54 @@ namespace Piedone.ThemeOverride.Services
             return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
         }
 
+        private CustomResource CreateCustomResource(bool isSaved, string path)
+        {
+            if (isSaved && _storageProvider.FileExists(path))
+            {
+                return new CustomResource
+                {
+                    UriFactory = new Lazy<Uri>(() => new Uri(_storageProvider.GetPublicUrl(path), UriKind.Relative)),
+                    ContentFactory = new Lazy<string>(() =>
+                    {
+                        using (var stream = _storageProvider.GetFile(path).OpenRead())
+                        {
+                            using (var streamReader = new StreamReader(stream))
+                            {
+                                return streamReader.ReadToEnd();
+                            }
+                        }
+                    })
+                };
+            }
+            else return new CustomResource();
+        }
+
+
+        private static Uri CreateUri(string url)
+        {
+            if (!string.IsNullOrEmpty(url) && Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+            {
+                return new Uri(url, Uri.IsWellFormedUriString(url, UriKind.Absolute) ? UriKind.Absolute : UriKind.Relative);
+            }
+
+            return null;
+        }
+
 
         private class Overrides : IOverrides
         {
             public Uri StylesheetUri { get; set; }
-            public ICustomStyles CustomStyles { get; set; }
+            public ICustomResource CustomStyles { get; set; }
+            public Uri HeadScriptUri { get; set; }
+            public ICustomResource CustomHeadScript { get; set; }
+            public Uri FootScriptUri { get; set; }
+            public ICustomResource CustomFootScript { get; set; }
         }
 
-        private class CustomStyles : ICustomStyles
+        private class CustomResource : ICustomResource
         {
             public Uri Uri { get { return UriFactory != null ? UriFactory.Value : null; } }
             public Lazy<Uri> UriFactory { get; set; }
-
             public string Content { get { return ContentFactory != null ? ContentFactory.Value : string.Empty; } }
             public Lazy<string> ContentFactory { get; set; }
         }

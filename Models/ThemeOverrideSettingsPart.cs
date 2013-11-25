@@ -15,10 +15,34 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.StylesheetUrl, value); }
         }
 
-        public bool CustomStylesSaved
+        public bool CustomStylesIsSaved
         {
-            get { return this.Retrieve(x => x.CustomStylesSaved); }
-            set { this.Store(x => x.CustomStylesSaved, value); }
+            get { return this.Retrieve(x => x.CustomStylesIsSaved); }
+            set { this.Store(x => x.CustomStylesIsSaved, value); }
+        }
+
+        public string HeadScriptUrl
+        {
+            get { return this.Retrieve(x => x.HeadScriptUrl); }
+            set { this.Store(x => x.HeadScriptUrl, value); }
+        }
+
+        public bool CustomHeadScriptIsSaved
+        {
+            get { return this.Retrieve(x => x.CustomHeadScriptIsSaved); }
+            set { this.Store(x => x.CustomHeadScriptIsSaved, value); }
+        }
+
+        public string FootScriptUrl
+        {
+            get { return this.Retrieve(x => x.FootScriptUrl); }
+            set { this.Store(x => x.FootScriptUrl, value); }
+        }
+
+        public bool CustomFootScriptIsSaved
+        {
+            get { return this.Retrieve(x => x.CustomFootScriptIsSaved); }
+            set { this.Store(x => x.CustomFootScriptIsSaved, value); }
         }
     }
 }
