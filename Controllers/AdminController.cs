@@ -31,13 +31,33 @@ namespace Piedone.ThemeOverride.Controllers
 
         public ActionResult Index()
         {
-            return View(new EditorViewModel { StyleOverride = _themeOverrideService.GetStyle() });
+            var overrides = _themeOverrideService.GetOverrides();
+            return View(new EditorViewModel
+            {
+                StylesheetUrl = overrides.StylesheetUri != null ? overrides.StylesheetUri.ToString() : string.Empty,
+                CustomStylesContent = overrides.CustomStyles.Content
+            });
         }
 
         [HttpPost]
         public ActionResult Index(EditorViewModel viewModel)
         {
-            _themeOverrideService.SaveStyle(viewModel.StyleOverride);
+            Uri stylesheetUri = null;
+
+            if (!string.IsNullOrEmpty(viewModel.StylesheetUrl))
+            {
+                if (!Uri.IsWellFormedUriString(viewModel.StylesheetUrl, UriKind.RelativeOrAbsolute))
+                {
+                    ModelState.AddModelError("StylesheetUrlMalformed", T("The given stylesheet URL is not a proper URL.").Text);
+                    return View(viewModel);
+                }
+
+                var stylesheetUriKind = Uri.IsWellFormedUriString(viewModel.StylesheetUrl, UriKind.Absolute) ? UriKind.Absolute : UriKind.Relative;
+                stylesheetUri = new Uri(viewModel.StylesheetUrl, stylesheetUriKind);
+            }
+
+
+            _themeOverrideService.SaveStyles(stylesheetUri, viewModel.CustomStylesContent);
 
             _notifier.Information(T("The settings have been saved."));
 

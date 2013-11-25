@@ -2,20 +2,31 @@
 
 @{
     Layout.Title = T("Theme Override Settings");
-    
+
     Style.Include("theme-override-admin.css");
     Script.Require("AceEditor.NoConflict").AtFoot();
 }
 
+<h1>@T("Theme Override Settings")</h1>
+
 @using (Html.BeginFormAntiForgeryPost())
 {
-    @Html.HiddenFor(m => m.StyleOverride)
+    @Html.HiddenFor(m => m.CustomStylesContent)
 
     <fieldset>
-        <legend>@T("Theme Override Settings")</legend>
-        @Html.LabelFor(m => m.StyleOverride, T("Styling (css)"))
-        <div id="theme-override-style-override-editor">@Model.StyleOverride</div>
-        <span class="hint">@T("This stylesheet will be included last, so you can override any styling.")</span>
+        <legend>@T("Styles")</legend>
+        <ol>
+            <li>
+                @Html.LabelFor(m => m.StylesheetUrl)
+                @Html.TextBoxFor(m => m.StylesheetUrl, new { @class = "text large" })
+                <span class="hint">@T("You can include an existing stylesheet here. This is meant for external stylesheets but will work for internal ones too. When including external stylesheets it's advised to use the protocol-relative format (i.e. not http:// but //).")</span>
+            </li>
+            <li>
+                @Html.LabelFor(m => m.CustomStylesContent, T("Custom styles"))
+                <div id="theme-override-custom-styles-editor">@Model.CustomStylesContent</div>
+                <span class="hint">@T("This stylesheet will be included last, so you can override any styling.")</span>
+            </li>
+        </ol>
     </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit" name="submit.Save" value="submit.Save">@T("Save")</button>
@@ -27,10 +38,10 @@
     <script type="text/javascript">
         (function ($) {
             $(function () {
-                var styleEditor = ace.edit("theme-override-style-override-editor");
+                var styleEditor = ace.edit("theme-override-custom-styles-editor");
                 styleEditor.getSession().setMode("ace/mode/css");
 
-                var $styleOverride = $("#@Html.FieldIdFor(m => m.StyleOverride)");
+                var $styleOverride = $("#@Html.FieldIdFor(m => m.CustomStylesContent)");
                 $($styleOverride[0].form).submit(function () {
                     $styleOverride.val(styleEditor.getValue());
                 });

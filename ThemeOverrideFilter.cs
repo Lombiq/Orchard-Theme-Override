@@ -37,11 +37,7 @@ namespace Piedone.ThemeOverride
             // Should only run on a full view rendering result
             if (!(filterContext.Result is ViewResult)) return;
 
-            string styleUrl;
-            if (_themeOverrideService.TryGetStylePublicUrl(out styleUrl))
-            {
-                _wca.GetContext().Layout.Head.Add(_shapeFactory.ThemeOverride_StyleInclusion(StyleSheetUrl: styleUrl));
-            }
+            _wca.GetContext().Layout.Head.Insert(_shapeFactory.ThemeOverride_OverridesInclusion(Overrides: _themeOverrideService.GetOverrides()));
         }
 
         public void OnResultExecuted(ResultExecutedContext filterContext)

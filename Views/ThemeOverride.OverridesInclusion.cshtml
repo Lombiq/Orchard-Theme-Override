@@ -1,0 +1,13 @@
+﻿@{
+    var overrides = (Piedone.ThemeOverride.Services.IOverrides)Model.Overrides;
+
+    if (overrides.StylesheetUri != null)
+    {
+        Style.Include(overrides.StylesheetUri.ToString());
+    }
+
+    if (overrides.CustomStyles.Uri != null)
+    {
+        Style.Include(overrides.CustomStyles.Uri.ToString());
+    }
+}

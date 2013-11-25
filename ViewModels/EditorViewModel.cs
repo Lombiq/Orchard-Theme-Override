@@ -7,6 +7,7 @@ namespace Piedone.ThemeOverride.ViewModels
 {
     public class EditorViewModel
     {
-        public string StyleOverride { get; set; }
+        public string StylesheetUrl { get; set; }
+        public string CustomStylesContent { get; set; }
     }
 }

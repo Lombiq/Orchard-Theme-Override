@@ -6,10 +6,22 @@ using Orchard;
 
 namespace Piedone.ThemeOverride.Services
 {
+    public interface IOverrides // Get it, iStyle, hehe...
+    {
+        Uri StylesheetUri { get; }
+        ICustomStyles CustomStyles { get; }
+    }
+
+    public interface ICustomStyles
+    {
+        Uri Uri { get; }
+        string Content { get; }
+    }
+
+
     public interface IThemeOverrideService : IDependency
     {
-        void SaveStyle(string css);
-        string GetStyle();
-        bool TryGetStylePublicUrl(out string publicUrl);
+        void SaveStyles(Uri stylesheetUri, string customStyles);
+        IOverrides GetOverrides();
     }
 }
