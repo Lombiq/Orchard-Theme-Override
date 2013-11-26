@@ -1,5 +1,6 @@
 ﻿#theme-override-custom-styles-editor,
 #theme-override-custom-head-script-editor,
-#theme-override-custom-foot-script-editor {
+#theme-override-custom-foot-script-editor,
+#theme-override-custom-placement-editor {
   height: 25em;
 }

@@ -18,6 +18,7 @@
     @Html.HiddenFor(m => m.CustomStylesContent)
     @Html.HiddenFor(m => m.CustomHeadScriptContent)
     @Html.HiddenFor(m => m.CustomFootScriptContent)
+    @Html.HiddenFor(m => m.CustomPlacementContent)
 
     <fieldset id="theme-override-stlyes">
         <legend>@T("Styles")</legend>
@@ -59,6 +60,16 @@
             </li>
         </ol>
     </fieldset>
+    <fieldset id="theme-override-placement">
+        <legend>@T("Placement")</legend>
+        <ol>
+            <li>
+                @Html.LabelFor(m => m.CustomPlacementContent, T("Custom placement declaration"))
+                <div id="theme-override-custom-placement-editor">@Model.CustomPlacementContent</div>
+                <span class="hint">@T("Provide a placement XML declaration (just as in a Placement.info file; you don't have to include the root <Placement> tag). This placement will override anything else.")</span>
+            </li>
+        </ol>
+    </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit" name="submit.Save" value="submit.Save">@T("Save")</button>
     </fieldset>
@@ -69,7 +80,7 @@
     <script type="text/javascript">
         (function ($) {
             $(function () {
-                $("#theme-override-stlyes legend, #theme-override-scripts legend")
+                $("#theme-override-stlyes legend, #theme-override-scripts legend, #theme-override-placement legend")
                     .expandoControl(function (controller) { return controller.next("ol"); }, { collapse: true, remember: true });
 
                 var styleEditor = ace.edit("theme-override-custom-styles-editor");
@@ -78,12 +89,15 @@
                 headScriptEditor.getSession().setMode("ace/mode/javascript");
                 var footScriptEditor = ace.edit("theme-override-custom-foot-script-editor");
                 footScriptEditor.getSession().setMode("ace/mode/javascript");
+                var placementEditor = ace.edit("theme-override-custom-placement-editor");
+                placementEditor.getSession().setMode("ace/mode/xml");
 
                 var $styleOverride = $("#@Html.FieldIdFor(m => m.CustomStylesContent)");
                 $($styleOverride[0].form).submit(function () {
                     $styleOverride.val(styleEditor.getValue());
                     $("#@Html.FieldIdFor(m => m.CustomHeadScriptContent)").val(headScriptEditor.getValue());
                     $("#@Html.FieldIdFor(m => m.CustomFootScriptContent)").val(footScriptEditor.getValue());
+                    $("#@Html.FieldIdFor(m => m.CustomPlacementContent)").val(placementEditor.getValue());
                 });
             });
         })(jQuery);

@@ -13,5 +13,6 @@ namespace Piedone.ThemeOverride.ViewModels
         public string CustomHeadScriptContent { get; set; }
         public string FootScriptUrl { get; set; }
         public string CustomFootScriptContent { get; set; }
+        public string CustomPlacementContent { get; set; }
     }
 }

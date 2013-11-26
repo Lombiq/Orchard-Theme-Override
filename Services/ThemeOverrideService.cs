@@ -9,24 +9,39 @@ using System.IO;
 using Orchard.Exceptions;
 using Piedone.ThemeOverride.Models;
 using Orchard.UI.Resources;
+using Orchard.DisplayManagement.Descriptors;
+using System.Collections.Concurrent;
+using Orchard.Caching.Services;
+using Orchard.Environment;
 
 namespace Piedone.ThemeOverride.Services
 {
-    public class ThemeOverrideService : IThemeOverrideService
+    public class ThemeOverrideService : IThemeOverrideService, IShapeTableEventHandler
     {
         private readonly IStorageProvider _storageProvider;
-        private readonly ISiteService _siteService;
+        private readonly Work<ISiteService> _siteServiceWork;
+        private readonly IPlacementProcessor _placementProcessor;
+        private readonly ICacheService _cacheService;
 
         private const string RootPath = "ThemeOverride/";
         private const string CustomStylesPath = RootPath + "OverridingStyles.css";
         private const string CustomHeadScriptPath = RootPath + "OverridingHeadScript.js";
         private const string CustomFootScriptPath = RootPath + "OverridingFootScript.js";
+        private const string CustomPlacementPath = RootPath + "Placement.info";
+
+        private const string PlacementsCacheKey = "Piedone.ThemeOverride.Services.ThemeOverrideService.Placements";
 
 
-        public ThemeOverrideService(IStorageProvider storageProvider, ISiteService siteService)
+        public ThemeOverrideService(
+            IStorageProvider storageProvider,
+            Work<ISiteService> siteServiceWork,
+            IPlacementProcessor placementProcessor,
+            ICacheService cacheService)
         {
             _storageProvider = storageProvider;
-            _siteService = siteService;
+            _siteServiceWork = siteServiceWork;
+            _placementProcessor = placementProcessor;
+            _cacheService = cacheService;
         }
 
 
@@ -84,6 +99,12 @@ namespace Piedone.ThemeOverride.Services
             }
         }
 
+        public void SavePlacement(string customPlacement)
+        {
+            GetPart().CustomPlacementContent = customPlacement;
+            _cacheService.Remove(PlacementsCacheKey);
+        }
+
         public IOverrides GetOverrides()
         {
             var part = GetPart();
@@ -99,13 +120,45 @@ namespace Piedone.ThemeOverride.Services
             overrides.FootScriptUri = CreateUri(part.FootScriptUrl);
             overrides.CustomFootScript = CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath);
 
+            overrides.CustomPlacementContent = part.CustomPlacementContent;
+
             return overrides;
+        }
+
+        public void ShapeTableCreated(ShapeTable shapeTable)
+        {
+            foreach (var descriptor in shapeTable.Descriptors.Values)
+            {
+                var existingPlacement = descriptor.Placement;
+                descriptor.Placement = ctx =>
+                {
+                    var placements = GetPlacements();
+
+                    if (!placements.ContainsKey(descriptor.ShapeType)) return existingPlacement(ctx);
+
+                    var declaration = placements[descriptor.ShapeType];
+                    if (!declaration.Predicate(ctx)) return existingPlacement(ctx);
+                    return declaration.Placement;
+                };
+            }
         }
 
 
         private ThemeOverrideSettingsPart GetPart()
         {
-            return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
+            return _siteServiceWork.Value.GetSiteSettings().As<ThemeOverrideSettingsPart>();
+        }
+
+        private IDictionary<string, IPlacementDeclaration> GetPlacements()
+        {
+            return _cacheService.Get(PlacementsCacheKey, () =>
+                {
+                    var customPlacement = GetPart().CustomPlacementContent;
+
+                    if (string.IsNullOrEmpty(customPlacement)) return new Dictionary<string, IPlacementDeclaration>();
+
+                    return _placementProcessor.Process(customPlacement);
+                });
         }
 
         private CustomResource CreateCustomResource(bool isSaved, string path)
@@ -150,6 +203,7 @@ namespace Piedone.ThemeOverride.Services
             public ICustomResource CustomHeadScript { get; set; }
             public Uri FootScriptUri { get; set; }
             public ICustomResource CustomFootScript { get; set; }
+            public string CustomPlacementContent { get; set; }
         }
 
         private class CustomResource : ICustomResource

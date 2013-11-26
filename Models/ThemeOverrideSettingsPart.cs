@@ -44,5 +44,11 @@ namespace Piedone.ThemeOverride.Models
             get { return this.Retrieve(x => x.CustomFootScriptIsSaved); }
             set { this.Store(x => x.CustomFootScriptIsSaved, value); }
         }
+
+        public string CustomPlacementContent
+        {
+            get { return this.Retrieve(x => x.CustomPlacementContent); }
+            set { this.Store(x => x.CustomPlacementContent, value); }
+        }
     }
 }

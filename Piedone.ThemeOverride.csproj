@@ -79,6 +79,10 @@
       <Project>{9916839C-39FC-4CEB-A5AF-89CA7E87119F}</Project>
       <Name>Orchard.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Orchard.Caching\Orchard.Caching.csproj">
+      <Project>{7528bf74-25c7-4abe-883a-443b4eec4776}</Project>
+      <Name>Orchard.Caching</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Admin\Index.cshtml" />
@@ -88,7 +92,9 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Handlers\ThemeOverrideSettingsPartHandler.cs" />
     <Compile Include="Models\ThemeOverrideSettingsPart.cs" />
+    <Compile Include="Services\IPlacementProcessor.cs" />
     <Compile Include="Services\IThemeOverrideService.cs" />
+    <Compile Include="Services\PlacementProcessor.cs" />
     <Compile Include="Services\ThemeOverrideService.cs" />
     <Compile Include="ThemeOverrideFilter.cs" />
     <Compile Include="ViewModels\EditorViewModel.cs" />

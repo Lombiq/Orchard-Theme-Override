@@ -11,6 +11,7 @@ using Orchard.UI.Resources;
 
 namespace Piedone.ThemeOverride.Controllers
 {
+    [ValidateInput(false)]
     public class AdminController : Controller
     {
         private readonly IThemeOverrideService _themeOverrideService;
@@ -41,6 +42,7 @@ namespace Piedone.ThemeOverride.Controllers
                 CustomHeadScriptContent = overrides.CustomHeadScript.Content,
                 FootScriptUrl = overrides.FootScriptUri != null ? overrides.FootScriptUri.ToString() : string.Empty,
                 CustomFootScriptContent = overrides.CustomFootScript.Content,
+                CustomPlacementContent = overrides.CustomPlacementContent
             });
         }
 
@@ -72,6 +74,7 @@ namespace Piedone.ThemeOverride.Controllers
             _themeOverrideService.SaveStyles(stylesheetUri, viewModel.CustomStylesContent);
             _themeOverrideService.SaveScripts(headScriptUri, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
             _themeOverrideService.SaveScripts(footScriptUri, viewModel.CustomFootScriptContent, ResourceLocation.Foot);
+            _themeOverrideService.SavePlacement(viewModel.CustomPlacementContent);
 
             _notifier.Information(T("The settings have been saved."));
 

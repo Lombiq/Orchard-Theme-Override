@@ -15,6 +15,7 @@ namespace Piedone.ThemeOverride.Services
         ICustomResource CustomHeadScript { get; }
         Uri FootScriptUri { get; }
         ICustomResource CustomFootScript { get; }
+        string CustomPlacementContent { get; }
     }
 
     public interface ICustomResource
@@ -28,6 +29,7 @@ namespace Piedone.ThemeOverride.Services
     {
         void SaveStyles(Uri stylesheetUri, string customStyles);
         void SaveScripts(Uri scriptUri, string customScript, ResourceLocation location);
+        void SavePlacement(string customPlacement);
         IOverrides GetOverrides();
     }
 }

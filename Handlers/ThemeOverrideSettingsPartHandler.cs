@@ -13,6 +13,8 @@ namespace Piedone.ThemeOverride.Handlers
         public ThemeOverrideSettingsPartHandler()
         {
             Filters.Add(new ActivatingFilter<ThemeOverrideSettingsPart>("Site"));
+
+            OnInitializing<ThemeOverrideSettingsPart>((ctx, part) => part.CustomPlacementContent = "<Placement></Placement>");
         }
     }
 }
