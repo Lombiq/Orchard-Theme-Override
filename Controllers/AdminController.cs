@@ -36,11 +36,11 @@ namespace Piedone.ThemeOverride.Controllers
             var overrides = _themeOverrideService.GetOverrides();
             return View(new EditorViewModel
             {
-                StylesheetUrl = overrides.StylesheetUri != null ? overrides.StylesheetUri.ToString() : string.Empty,
+                StylesheetUrls = string.Join(Environment.NewLine, overrides.StylesheetUris),
                 CustomStylesContent = overrides.CustomStyles.Content,
-                HeadScriptUrl = overrides.HeadScriptUri != null ? overrides.HeadScriptUri.ToString() : string.Empty,
+                HeadScriptUrls = string.Join(Environment.NewLine, overrides.HeadScriptUris),
                 CustomHeadScriptContent = overrides.CustomHeadScript.Content,
-                FootScriptUrl = overrides.FootScriptUri != null ? overrides.FootScriptUri.ToString() : string.Empty,
+                FootScriptUrls = string.Join(Environment.NewLine, overrides.FootScriptUris),
                 CustomFootScriptContent = overrides.CustomFootScript.Content,
                 CustomPlacementContent = overrides.CustomPlacementContent
             });
@@ -49,31 +49,55 @@ namespace Piedone.ThemeOverride.Controllers
         [HttpPost]
         public ActionResult Index(EditorViewModel viewModel)
         {
-            Uri stylesheetUri;
-            if (!TryCreateUri(viewModel.StylesheetUrl, out stylesheetUri))
+            var stylesheetUris = new List<Uri>();
+            if (!string.IsNullOrEmpty(viewModel.StylesheetUrls))
             {
-                ModelState.AddModelError("StylesheetUrlMalformed", T("The given stylesheet URL is not a proper URL.").Text);
+                foreach (var url in viewModel.StylesheetUrls.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Uri stylesheetUri;
+                    if (!TryCreateUri(url, out stylesheetUri))
+                    {
+                        ModelState.AddModelError("StylesheetUrlMalformed", T("The stylesheet URL {0} is not a proper URL.", url).Text);
+                    }
+                    else stylesheetUris.Add(stylesheetUri);
+                } 
             }
 
-            Uri headScriptUri;
-            if (!TryCreateUri(viewModel.HeadScriptUrl, out headScriptUri))
+            var headScriptUris = new List<Uri>();
+            if (!string.IsNullOrEmpty(viewModel.HeadScriptUrls))
             {
-                ModelState.AddModelError("HeadScriptUrlMalformed", T("The given head script URL is not a proper URL.").Text);
+                foreach (var url in viewModel.HeadScriptUrls.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Uri headScriptUri;
+                    if (!TryCreateUri(url, out headScriptUri))
+                    {
+                        ModelState.AddModelError("HeadScriptUrlMalformed", T("The head script URL {0} is not a proper URL.", url).Text);
+                    }
+                    else headScriptUris.Add(headScriptUri);
+                }
             }
 
-            Uri footScriptUri;
-            if (!TryCreateUri(viewModel.FootScriptUrl, out footScriptUri))
+            var footScriptUris = new List<Uri>();
+            if (!string.IsNullOrEmpty(viewModel.FootScriptUrls))
             {
-                ModelState.AddModelError("FootScriptUrlMalformed", T("The given foot script URL is not a proper URL.").Text);
+                foreach (var url in viewModel.FootScriptUrls.Split(Environment.NewLine.ToArray(), StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Uri footScriptUri;
+                    if (!TryCreateUri(url, out footScriptUri))
+                    {
+                        ModelState.AddModelError("FootScriptUrlMalformed", T("The foot script URL {0} is not a proper URL.", url).Text);
+                    }
+                    else footScriptUris.Add(footScriptUri);
+                }
             }
 
 
             if (!ModelState.IsValid) return View(viewModel);
 
 
-            _themeOverrideService.SaveStyles(stylesheetUri, viewModel.CustomStylesContent);
-            _themeOverrideService.SaveScripts(headScriptUri, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
-            _themeOverrideService.SaveScripts(footScriptUri, viewModel.CustomFootScriptContent, ResourceLocation.Foot);
+            _themeOverrideService.SaveStyles(stylesheetUris, viewModel.CustomStylesContent);
+            _themeOverrideService.SaveScripts(headScriptUris, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
+            _themeOverrideService.SaveScripts(footScriptUris, viewModel.CustomFootScriptContent, ResourceLocation.Foot);
             _themeOverrideService.SavePlacement(viewModel.CustomPlacementContent);
 
             _notifier.Information(T("The settings have been saved."));
@@ -88,16 +112,15 @@ namespace Piedone.ThemeOverride.Controllers
 
             if (!string.IsNullOrEmpty(url))
             {
-                if (!Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
-                {
-                    return false;
-                }
+                if (!Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute)) return false;
 
                 var stylesheetUriKind = Uri.IsWellFormedUriString(url, UriKind.Absolute) ? UriKind.Absolute : UriKind.Relative;
                 uri = new Uri(url, stylesheetUriKind);
+
+                return true;
             }
 
-            return true;
+            return false;
         }
     }
 }

@@ -2,20 +2,26 @@
     var overrides = (Piedone.ThemeOverride.Services.IOverrides)Model.Overrides;
 
     
-    if (overrides.StylesheetUri != null)
+    if (overrides.StylesheetUris.Any())
     {
-        Style.Include(overrides.StylesheetUri.ToString());
+        foreach (var uri in overrides.StylesheetUris)
+        {
+            Style.Include(uri.ToString()); 
+        }
     }
 
     if (overrides.CustomStyles.Uri != null)
     {
         Style.Include(overrides.CustomStyles.Uri.ToString());
     }
-    
 
-    if (overrides.HeadScriptUri != null)
+
+    if (overrides.HeadScriptUris.Any())
     {
-        Script.Include(overrides.HeadScriptUri.ToString()).AtHead();
+        foreach (var uri in overrides.HeadScriptUris)
+        {
+            Script.Include(uri.ToString()).AtHead();
+        }
     }
 
     if (overrides.CustomHeadScript.Uri != null)
@@ -24,9 +30,12 @@
     }
 
 
-    if (overrides.FootScriptUri != null)
+    if (overrides.FootScriptUris.Any())
     {
-        Script.Include(overrides.FootScriptUri.ToString()).AtFoot();
+        foreach (var uri in overrides.FootScriptUris)
+        {
+            Script.Include(uri.ToString()).AtFoot();
+        }
     }
 
     if (overrides.CustomFootScript.Uri != null)

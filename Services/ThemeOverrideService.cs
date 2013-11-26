@@ -13,6 +13,7 @@ using Orchard.DisplayManagement.Descriptors;
 using System.Collections.Concurrent;
 using Orchard.Caching.Services;
 using Orchard.Environment;
+using Orchard.Services;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -20,6 +21,7 @@ namespace Piedone.ThemeOverride.Services
     {
         private readonly IStorageProvider _storageProvider;
         private readonly Work<ISiteService> _siteServiceWork;
+        private readonly IJsonConverter _jsonConverter;
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
 
@@ -35,22 +37,25 @@ namespace Piedone.ThemeOverride.Services
         public ThemeOverrideService(
             IStorageProvider storageProvider,
             Work<ISiteService> siteServiceWork,
+            IJsonConverter jsonConverter,
             IPlacementProcessor placementProcessor,
             ICacheService cacheService)
         {
             _storageProvider = storageProvider;
             _siteServiceWork = siteServiceWork;
+            _jsonConverter = jsonConverter;
             _placementProcessor = placementProcessor;
             _cacheService = cacheService;
         }
 
 
-        public void SaveStyles(Uri stylesheetUri, string customStyles)
+        public void SaveStyles(IEnumerable<Uri> stylesheetUris, string customStyles)
         {
             var part = GetPart();
 
-            if (stylesheetUri != null) part.StylesheetUrl = stylesheetUri.ToString();
-            else part.StylesheetUrl = string.Empty;
+            if (stylesheetUris == null) stylesheetUris = Enumerable.Empty<Uri>();
+
+            part.StylesheetUrisJson = _jsonConverter.Serialize(stylesheetUris);
 
             if (_storageProvider.FileExists(CustomStylesPath)) _storageProvider.DeleteFile(CustomStylesPath);
 
@@ -66,22 +71,24 @@ namespace Piedone.ThemeOverride.Services
             }
         }
 
-        public void SaveScripts(Uri scriptUri, string customScript, ResourceLocation location)
+        public void SaveScripts(IEnumerable<Uri> scriptUris, string customScript, ResourceLocation location)
         {
             var part = GetPart();
+
+            if (scriptUris == null) scriptUris = Enumerable.Empty<Uri>();
+
+            var urisJson = _jsonConverter.Serialize(scriptUris);
 
             string customScriptPath;
             if (location == ResourceLocation.Head)
             {
                 customScriptPath = CustomHeadScriptPath;
-                if (scriptUri != null) part.HeadScriptUrl = scriptUri.ToString();
-                else part.HeadScriptUrl = string.Empty;
+                part.HeadScriptUrisJson = urisJson;
             }
             else
             {
                 customScriptPath = CustomFootScriptPath;
-                if (scriptUri != null) part.FootScriptUrl = scriptUri.ToString();
-                else part.FootScriptUrl = string.Empty;
+                part.FootScriptUrisJson = urisJson;
             }
 
             if (_storageProvider.FileExists(customScriptPath)) _storageProvider.DeleteFile(customScriptPath);
@@ -111,13 +118,13 @@ namespace Piedone.ThemeOverride.Services
 
             var overrides = new Overrides();
 
-            overrides.StylesheetUri = CreateUri(part.StylesheetUrl);
+            overrides.StylesheetUris = CreateUris(part.StylesheetUrisJson);
             overrides.CustomStyles = CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath);
 
-            overrides.HeadScriptUri = CreateUri(part.HeadScriptUrl);
+            overrides.HeadScriptUris = CreateUris(part.HeadScriptUrisJson);
             overrides.CustomHeadScript = CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath);
 
-            overrides.FootScriptUri = CreateUri(part.FootScriptUrl);
+            overrides.FootScriptUris = CreateUris(part.FootScriptUrisJson);
             overrides.CustomFootScript = CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath);
 
             overrides.CustomPlacementContent = part.CustomPlacementContent;
@@ -183,25 +190,20 @@ namespace Piedone.ThemeOverride.Services
             else return new CustomResource();
         }
 
-
-        private static Uri CreateUri(string url)
+        private IEnumerable<Uri> CreateUris(string urlsJson)
         {
-            if (!string.IsNullOrEmpty(url) && Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
-            {
-                return new Uri(url, Uri.IsWellFormedUriString(url, UriKind.Absolute) ? UriKind.Absolute : UriKind.Relative);
-            }
-
-            return null;
+            if (string.IsNullOrEmpty(urlsJson)) return Enumerable.Empty<Uri>();
+            return _jsonConverter.Deserialize<IEnumerable<Uri>>(urlsJson);
         }
 
 
         private class Overrides : IOverrides
         {
-            public Uri StylesheetUri { get; set; }
+            public IEnumerable<Uri> StylesheetUris { get; set; }
             public ICustomResource CustomStyles { get; set; }
-            public Uri HeadScriptUri { get; set; }
+            public IEnumerable<Uri> HeadScriptUris { get; set; }
             public ICustomResource CustomHeadScript { get; set; }
-            public Uri FootScriptUri { get; set; }
+            public IEnumerable<Uri> FootScriptUris { get; set; }
             public ICustomResource CustomFootScript { get; set; }
             public string CustomPlacementContent { get; set; }
         }

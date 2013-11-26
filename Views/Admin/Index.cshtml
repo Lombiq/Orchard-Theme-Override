@@ -13,6 +13,8 @@
     @T("Here you can override the current theme's styling, scripts and placement.")
 </div>
 
+@Html.ValidationSummary()
+
 @using (Html.BeginFormAntiForgeryPost())
 {
     @Html.HiddenFor(m => m.CustomStylesContent)
@@ -24,9 +26,9 @@
         <legend>@T("Styles")</legend>
         <ol>
             <li>
-                @Html.LabelFor(m => m.StylesheetUrl, T("Stylesheet URL"))
-                @Html.TextBoxFor(m => m.StylesheetUrl, new { @class = "text large" })
-                <span class="hint">@T("You can include an existing stylesheet here. This is meant for external stylesheets but will work for internal ones too. When including external stylesheets it's advised to use the protocol-relative format (i.e. not http:// but //).")</span>
+                @Html.LabelFor(m => m.StylesheetUrls, T("Stylesheet URLs"))
+                @Html.TextAreaFor(m => m.StylesheetUrls, new { @class = "text large" })
+                <span class="hint">@T("You can include existing stylesheets (one per line) here. The stylesheets will keep their order. This is meant for external stylesheets but will work for internal ones too. When including external stylesheets it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomStylesContent, T("Custom styles"))
@@ -39,9 +41,9 @@
         <legend>@T("Scripts")</legend>
         <ol>
             <li>
-                @Html.LabelFor(m => m.HeadScriptUrl, T("Head script URL"))
-                @Html.TextBoxFor(m => m.HeadScriptUrl, new { @class = "text large" })
-                <span class="hint">@T("You can include an existing script here for the head. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative format (i.e. not http:// but //).")</span>
+                @Html.LabelFor(m => m.HeadScriptUrls, T("Head script URLs"))
+                @Html.TextAreaFor(m => m.HeadScriptUrls, new { @class = "text large" })
+                <span class="hint">@T("You can include an existing scripts (one per line) here for the head. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomHeadScriptContent, T("Custom head script"))
@@ -49,9 +51,9 @@
                 <span class="hint">@T("This head script will be included last, so you can override any head script behaviour.")</span>
             </li>
             <li>
-                @Html.LabelFor(m => m.FootScriptUrl, T("Foot script URL"))
-                @Html.TextBoxFor(m => m.FootScriptUrl, new { @class = "text large" })
-                <span class="hint">@T("You can include an existing script here for the foot. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative format (i.e. not http:// but //).")</span>
+                @Html.LabelFor(m => m.FootScriptUrls, T("Foot script URLs"))
+                @Html.TextAreaFor(m => m.FootScriptUrls, new { @class = "text large" })
+                <span class="hint">@T("You can include an existing scripts (one per line) here for the foot. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomFootScriptContent, T("Custom foot script"))
@@ -66,7 +68,7 @@
             <li>
                 @Html.LabelFor(m => m.CustomPlacementContent, T("Custom placement declaration"))
                 <div id="theme-override-custom-placement-editor">@Model.CustomPlacementContent</div>
-                <span class="hint">@T("Provide a placement XML declaration (just as in a Placement.info file; you don't have to include the root <Placement> tag). This placement will override anything else.")</span>
+                <span class="hint">@T("Provide a placement XML declaration (just as in a Placement.info file; you don't have to include the root &lt;Placement&gt; tag). This placement will override anything else. For more information on the format see <a href=\"http://docs.orchardproject.net/Documentation/Understanding-placement-info\">the documentation</a>.")</span>
             </li>
         </ol>
     </fieldset>

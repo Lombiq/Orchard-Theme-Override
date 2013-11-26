@@ -9,11 +9,11 @@ namespace Piedone.ThemeOverride.Services
 {
     public interface IOverrides // Get it, iStyle, hehe...
     {
-        Uri StylesheetUri { get; }
+        IEnumerable<Uri> StylesheetUris { get; }
         ICustomResource CustomStyles { get; }
-        Uri HeadScriptUri { get; }
+        IEnumerable<Uri> HeadScriptUris { get; }
         ICustomResource CustomHeadScript { get; }
-        Uri FootScriptUri { get; }
+        IEnumerable<Uri> FootScriptUris { get; }
         ICustomResource CustomFootScript { get; }
         string CustomPlacementContent { get; }
     }
@@ -27,8 +27,8 @@ namespace Piedone.ThemeOverride.Services
 
     public interface IThemeOverrideService : IDependency
     {
-        void SaveStyles(Uri stylesheetUri, string customStyles);
-        void SaveScripts(Uri scriptUri, string customScript, ResourceLocation location);
+        void SaveStyles(IEnumerable<Uri> stylesheetUris, string customStyles);
+        void SaveScripts(IEnumerable<Uri> scriptUris, string customScript, ResourceLocation location);
         void SavePlacement(string customPlacement);
         IOverrides GetOverrides();
     }

@@ -9,10 +9,10 @@ namespace Piedone.ThemeOverride.Models
 {
     public class ThemeOverrideSettingsPart : ContentPart
     {
-        public string StylesheetUrl
+        public string StylesheetUrisJson
         {
-            get { return this.Retrieve(x => x.StylesheetUrl); }
-            set { this.Store(x => x.StylesheetUrl, value); }
+            get { return this.Retrieve(x => x.StylesheetUrisJson); }
+            set { this.Store(x => x.StylesheetUrisJson, value); }
         }
 
         public bool CustomStylesIsSaved
@@ -21,10 +21,10 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.CustomStylesIsSaved, value); }
         }
 
-        public string HeadScriptUrl
+        public string HeadScriptUrisJson
         {
-            get { return this.Retrieve(x => x.HeadScriptUrl); }
-            set { this.Store(x => x.HeadScriptUrl, value); }
+            get { return this.Retrieve(x => x.HeadScriptUrisJson); }
+            set { this.Store(x => x.HeadScriptUrisJson, value); }
         }
 
         public bool CustomHeadScriptIsSaved
@@ -33,10 +33,10 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.CustomHeadScriptIsSaved, value); }
         }
 
-        public string FootScriptUrl
+        public string FootScriptUrisJson
         {
-            get { return this.Retrieve(x => x.FootScriptUrl); }
-            set { this.Store(x => x.FootScriptUrl, value); }
+            get { return this.Retrieve(x => x.FootScriptUrisJson); }
+            set { this.Store(x => x.FootScriptUrisJson, value); }
         }
 
         public bool CustomFootScriptIsSaved
