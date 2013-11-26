@@ -7,7 +7,7 @@ using Orchard.UI.Resources;
 
 namespace Piedone.ThemeOverride.Services
 {
-    public interface IOverrides // Get it, iStyle, hehe...
+    public interface IOverrides
     {
         IEnumerable<Uri> StylesheetUris { get; }
         ICustomResource CustomStyles { get; }
