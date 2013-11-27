@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
+using Orchard.Localization;
+using Orchard.UI.Notify;
+using Orchard.UI.Resources;
 using Piedone.ThemeOverride.Services;
 using Piedone.ThemeOverride.ViewModels;
-using Orchard.UI.Notify;
-using Orchard.Localization;
-using Orchard.UI.Resources;
 
 namespace Piedone.ThemeOverride.Controllers
 {

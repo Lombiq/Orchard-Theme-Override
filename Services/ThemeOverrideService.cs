@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using Orchard.Settings;
-using Orchard.ContentManagement;
-using Orchard.FileSystems.Media;
-using System.IO;
-using Orchard.Exceptions;
-using Piedone.ThemeOverride.Models;
-using Orchard.UI.Resources;
-using Orchard.DisplayManagement.Descriptors;
-using System.Collections.Concurrent;
 using Orchard.Caching.Services;
+using Orchard.ContentManagement;
+using Orchard.DisplayManagement.Descriptors;
 using Orchard.Environment;
+using Orchard.FileSystems.Media;
 using Orchard.Services;
+using Orchard.Settings;
+using Orchard.UI.Resources;
+using Piedone.ThemeOverride.Models;
 
 namespace Piedone.ThemeOverride.Services
 {
