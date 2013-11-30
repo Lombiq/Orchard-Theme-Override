@@ -23,7 +23,7 @@ namespace Piedone.ThemeOverride.Services
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
 
-        private const string RootPath = "ThemeOverride/";
+        private const string RootPath = "_PiedoneModules/ThemeOverride/";
         private const string CustomStylesPath = RootPath + "OverridingStyles.css";
         private const string CustomHeadScriptPath = RootPath + "OverridingHeadScript.js";
         private const string CustomFootScriptPath = RootPath + "OverridingFootScript.js";
