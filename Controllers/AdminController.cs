@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Orchard.Localization;
+using Orchard.Security;
 using Orchard.UI.Notify;
 using Orchard.UI.Resources;
 using Piedone.ThemeOverride.Services;
@@ -13,6 +14,7 @@ namespace Piedone.ThemeOverride.Controllers
     [ValidateInput(false)]
     public class AdminController : Controller
     {
+        private readonly IAuthorizer _authorizer;
         private readonly IThemeOverrideService _themeOverrideService;
         private readonly INotifier _notifier;
 
@@ -20,9 +22,11 @@ namespace Piedone.ThemeOverride.Controllers
 
 
         public AdminController(
+            IAuthorizer authorizer,
             IThemeOverrideService themeOverrideService,
             INotifier notifier)
         {
+            _authorizer = authorizer;
             _themeOverrideService = themeOverrideService;
             _notifier = notifier;
 
@@ -32,6 +36,8 @@ namespace Piedone.ThemeOverride.Controllers
 
         public ActionResult Index()
         {
+            if (!_authorizer.Authorize(StandardPermissions.SiteOwner)) return new HttpUnauthorizedResult();
+            
             var overrides = _themeOverrideService.GetOverrides();
             return View(new EditorViewModel
             {
@@ -48,6 +54,8 @@ namespace Piedone.ThemeOverride.Controllers
         [HttpPost]
         public ActionResult Index(EditorViewModel viewModel)
         {
+            if (!_authorizer.Authorize(StandardPermissions.SiteOwner)) return new HttpUnauthorizedResult();
+
             var stylesheetUris = new List<Uri>();
             if (!string.IsNullOrEmpty(viewModel.StylesheetUrls))
             {
