@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Orchard.Events;
 using Orchard.Localization;
 using Orchard.Security;
 using Orchard.UI.Notify;
@@ -11,11 +12,17 @@ using Piedone.ThemeOverride.ViewModels;
 
 namespace Piedone.ThemeOverride.Controllers
 {
+    public interface ICombinatorCacheManipulationEventHandler : IEventHandler
+    {
+        void EmptyCache();
+    }
+
     [ValidateInput(false)]
     public class AdminController : Controller
     {
         private readonly IAuthorizer _authorizer;
         private readonly IThemeOverrideService _themeOverrideService;
+        private readonly ICombinatorCacheManipulationEventHandler _combinatorCacheManipulator;
         private readonly INotifier _notifier;
 
         public Localizer T { get; set; }
@@ -24,10 +31,12 @@ namespace Piedone.ThemeOverride.Controllers
         public AdminController(
             IAuthorizer authorizer,
             IThemeOverrideService themeOverrideService,
+            ICombinatorCacheManipulationEventHandler combinatorCacheManipulator,
             INotifier notifier)
         {
             _authorizer = authorizer;
             _themeOverrideService = themeOverrideService;
+            _combinatorCacheManipulator = combinatorCacheManipulator;
             _notifier = notifier;
 
             T = NullLocalizer.Instance;
@@ -106,6 +115,8 @@ namespace Piedone.ThemeOverride.Controllers
             _themeOverrideService.SaveScripts(headScriptUris, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
             _themeOverrideService.SaveScripts(footScriptUris, viewModel.CustomFootScriptContent, ResourceLocation.Foot);
             _themeOverrideService.SavePlacement(viewModel.CustomPlacementContent);
+
+            _combinatorCacheManipulator.EmptyCache();
 
             _notifier.Information(T("The settings have been saved."));
 
