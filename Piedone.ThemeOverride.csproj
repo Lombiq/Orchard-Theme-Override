@@ -90,18 +90,17 @@
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Services\OverridesInjector.cs" />
     <Compile Include="Handlers\ThemeOverrideSettingsPartHandler.cs" />
     <Compile Include="Models\ThemeOverrideSettingsPart.cs" />
     <Compile Include="Services\IPlacementProcessor.cs" />
     <Compile Include="Services\IThemeOverrideService.cs" />
     <Compile Include="Services\PlacementProcessor.cs" />
     <Compile Include="Services\ThemeOverrideService.cs" />
-    <Compile Include="ThemeOverrideFilter.cs" />
     <Compile Include="ViewModels\EditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Styles\theme-override-admin.less" />
-    <None Include="Views\ThemeOverride.OverridesInclusion.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

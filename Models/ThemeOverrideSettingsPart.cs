@@ -4,6 +4,12 @@ namespace Piedone.ThemeOverride.Models
 {
     public class ThemeOverrideSettingsPart : ContentPart
     {
+        public string FaviconUrl
+        {
+            get { return this.Retrieve(x => x.FaviconUrl); }
+            set { this.Store(x => x.FaviconUrl, value); }
+        }
+
         public string StylesheetUrisJson
         {
             get { return this.Retrieve(x => x.StylesheetUrisJson); }

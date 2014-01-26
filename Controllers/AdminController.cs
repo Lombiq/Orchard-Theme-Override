@@ -46,10 +46,11 @@ namespace Piedone.ThemeOverride.Controllers
         public ActionResult Index()
         {
             if (!_authorizer.Authorize(StandardPermissions.SiteOwner)) return new HttpUnauthorizedResult();
-            
+
             var overrides = _themeOverrideService.GetOverrides();
             return View(new EditorViewModel
             {
+                FaviconUrl = overrides.FaviconUri != null ? overrides.FaviconUri.ToString() : string.Empty,
                 StylesheetUrls = string.Join(Environment.NewLine, overrides.StylesheetUris),
                 CustomStylesContent = overrides.CustomStyles.Content,
                 HeadScriptUrls = string.Join(Environment.NewLine, overrides.HeadScriptUris),
@@ -65,6 +66,15 @@ namespace Piedone.ThemeOverride.Controllers
         {
             if (!_authorizer.Authorize(StandardPermissions.SiteOwner)) return new HttpUnauthorizedResult();
 
+            Uri faviconUri = null;
+            if (!string.IsNullOrEmpty(viewModel.FaviconUrl))
+            {
+                if (!TryCreateUri(viewModel.FaviconUrl, out faviconUri))
+                {
+                    ModelState.AddModelError("FaviconUrlMalformed", T("The favicon URL {0} is not a proper URL.", viewModel.FaviconUrl).Text);
+                }
+            }
+
             var stylesheetUris = new List<Uri>();
             if (!string.IsNullOrEmpty(viewModel.StylesheetUrls))
             {
@@ -76,7 +86,7 @@ namespace Piedone.ThemeOverride.Controllers
                         ModelState.AddModelError("StylesheetUrlMalformed", T("The stylesheet URL {0} is not a proper URL.", url).Text);
                     }
                     else stylesheetUris.Add(stylesheetUri);
-                } 
+                }
             }
 
             var headScriptUris = new List<Uri>();
@@ -110,7 +120,7 @@ namespace Piedone.ThemeOverride.Controllers
 
             if (!ModelState.IsValid) return View(viewModel);
 
-
+            if (faviconUri != null) _themeOverrideService.SaveFaviconUri(faviconUri);
             _themeOverrideService.SaveStyles(stylesheetUris, viewModel.CustomStylesContent);
             _themeOverrideService.SaveScripts(headScriptUris, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
             _themeOverrideService.SaveScripts(footScriptUris, viewModel.CustomFootScriptContent, ResourceLocation.Foot);

@@ -47,6 +47,11 @@ namespace Piedone.ThemeOverride.Services
         }
 
 
+        public void SaveFaviconUri(Uri uri)
+        {
+            GetPart().FaviconUrl = uri.ToString();
+        }
+
         public void SaveStyles(IEnumerable<Uri> stylesheetUris, string customStyles)
         {
             var part = GetPart();
@@ -116,6 +121,8 @@ namespace Piedone.ThemeOverride.Services
 
             var overrides = new Overrides();
 
+            if (!string.IsNullOrEmpty(part.FaviconUrl)) overrides.FaviconUri = CreateUri(part.FaviconUrl);
+
             overrides.StylesheetUris = CreateUris(part.StylesheetUrisJson);
             overrides.CustomStyles = CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath);
 
@@ -172,7 +179,7 @@ namespace Piedone.ThemeOverride.Services
             {
                 return new CustomResource
                 {
-                    UriFactory = new Lazy<Uri>(() => new Uri(_storageProvider.GetPublicUrl(path), UriKind.Relative)),
+                    UriFactory = new Lazy<Uri>(() => CreateUri(_storageProvider.GetPublicUrl(path))),
                     ContentFactory = new Lazy<string>(() =>
                     {
                         using (var stream = _storageProvider.GetFile(path).OpenRead())
@@ -195,8 +202,16 @@ namespace Piedone.ThemeOverride.Services
         }
 
 
+        private static Uri CreateUri(string url)
+        {
+            if (Uri.IsWellFormedUriString(url, UriKind.Absolute)) return new Uri(url, UriKind.Absolute);
+            return new Uri(url, UriKind.Relative);
+        }
+
+
         private class Overrides : IOverrides
         {
+            public Uri FaviconUri { get; set; }
             public IEnumerable<Uri> StylesheetUris { get; set; }
             public ICustomResource CustomStyles { get; set; }
             public IEnumerable<Uri> HeadScriptUris { get; set; }
