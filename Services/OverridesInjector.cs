@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Orchard.DisplayManagement.Implementation;
+using Orchard.Mvc;
+using Orchard.UI.Admin;
 using Orchard.UI.Resources;
 using Piedone.ThemeOverride.Services;
 
@@ -11,12 +13,17 @@ namespace Piedone.ThemeOverride.Services
 {
     public class OverridesInjector : IShapeDisplayEvents
     {
+        private readonly IHttpContextAccessor _hca;
         private readonly IResourceManager _resourceManager;
         private readonly IThemeOverrideService _themeOverrideService;
 
 
-        public OverridesInjector(IResourceManager resourceManager, IThemeOverrideService themeOverrideService)
+        public OverridesInjector(
+            IHttpContextAccessor hca,
+            IResourceManager resourceManager,
+            IThemeOverrideService themeOverrideService)
         {
+            _hca = hca;
             _resourceManager = resourceManager;
             _themeOverrideService = themeOverrideService;
         }
@@ -25,6 +32,10 @@ namespace Piedone.ThemeOverride.Services
         public void Displaying(ShapeDisplayingContext context)
         {
             if (context.ShapeMetadata.Type != "DocumentZone" || context.Shape.ZoneName != "Head") return;
+
+            var httpContext = _hca.Current();
+            if (httpContext == null) return;
+            if (AdminFilter.IsApplied(httpContext.Request.RequestContext)) return;
 
             var overrides = _themeOverrideService.GetOverrides();
             if (overrides.FaviconUri != null)
