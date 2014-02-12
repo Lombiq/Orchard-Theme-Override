@@ -148,9 +148,13 @@ namespace Piedone.ThemeOverride.Services
 
                     if (!placements.ContainsKey(descriptor.ShapeType)) return existingPlacement(ctx);
 
-                    var declaration = placements[descriptor.ShapeType];
-                    if (!declaration.Predicate(ctx)) return existingPlacement(ctx);
-                    return declaration.Placement;
+                    var declarations = placements[descriptor.ShapeType];
+                    foreach (var declaration in declarations)
+                    {
+                        if (declaration.Predicate(ctx)) return declaration.Placement; 
+                    }
+
+                    return existingPlacement(ctx);
                 };
             }
         }
@@ -161,13 +165,13 @@ namespace Piedone.ThemeOverride.Services
             return _siteServiceWork.Value.GetSiteSettings().As<ThemeOverrideSettingsPart>();
         }
 
-        private IDictionary<string, IPlacementDeclaration> GetPlacements()
+        private IDictionary<string, IEnumerable<IPlacementDeclaration>> GetPlacements()
         {
             return _cacheService.Get(PlacementsCacheKey, () =>
                 {
                     var customPlacement = GetPart().CustomPlacementContent;
 
-                    if (string.IsNullOrEmpty(customPlacement)) return new Dictionary<string, IPlacementDeclaration>();
+                    if (string.IsNullOrEmpty(customPlacement)) return new Dictionary<string, IEnumerable<IPlacementDeclaration>>();
 
                     return _placementProcessor.Process(customPlacement);
                 });

@@ -11,10 +11,9 @@ namespace Piedone.ThemeOverride.Services
     // Mainly copy of ShapePlacementParsingStrategy, see: https://orchard.codeplex.com/workitem/20309
     public class PlacementProcessor : IPlacementProcessor
     {
-        //private static readonly Dictionary<string, PlacementDeclaration> _placements = new Dictionary<string, PlacementDeclaration>();
-        public IDictionary<string, IPlacementDeclaration> Process(string placementDeclaration)
+        public IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration)
         {
-            var placements = new Dictionary<string, IPlacementDeclaration>();
+            var placements = new Dictionary<string, IEnumerable<IPlacementDeclaration>>();
 
             if (string.IsNullOrEmpty(placementDeclaration)) return placements;
 
@@ -83,15 +82,19 @@ namespace Piedone.ThemeOverride.Services
                         }
                     }
 
-                    //var expression = (Expression<Func<ShapePlacementContext, bool>>)(ctx => predicate(ctx));
-                    //var serialized = new ExpressionSerializer(new BinarySerializer()).SerializeBinary(expression);
-                    //var deserialized = (Expression<Func<ShapePlacementContext, bool>>)new ExpressionSerializer(new BinarySerializer()).DeserializeBinary(serialized);
-                    //deserialized.Compile()
-                    placements[shapeType] = new PlacementDeclaration
+                    if (!placements.ContainsKey(shapeType))
                     {
-                        Predicate = predicate,
-                        Placement = placement
-                    };
+                        placements[shapeType] = Enumerable.Empty<IPlacementDeclaration>();
+                    }
+
+                    placements[shapeType] = placements[shapeType].Concat(new[]
+                    {
+                        new PlacementDeclaration
+                        {
+                            Predicate = predicate,
+                            Placement = placement
+                        }
+                    });
                 }
             }
 

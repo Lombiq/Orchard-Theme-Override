@@ -14,6 +14,6 @@ namespace Piedone.ThemeOverride.Services
 
     public interface IPlacementProcessor : IDependency
     {
-        IDictionary<string, IPlacementDeclaration> Process(string placementDeclaration);
+        IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration);
     }
 }
