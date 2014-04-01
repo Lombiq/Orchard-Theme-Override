@@ -3,11 +3,11 @@ AntiForgery: enabled
 Author: Piedone
 Website: http://themeoverride.codeplex.com
 Version: 0.5.2
-OrchardVersion: 1.5
+OrchardVersion: 1.8
 Description: Adds configuration to the admin page that lets override the styling of the current theme
 Features:
     Piedone.ThemeOverride:
 		Name: Theme Override
         Description: Adds configuration to the admin page that lets override the styling of the current theme
 		Category: Design
-		Dependencies: Lombiq.AceEditor, Orchard.Themes
+		Dependencies: Lombiq.AceEditor, Orchard.Caching, Orchard.Themes

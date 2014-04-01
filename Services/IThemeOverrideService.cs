@@ -1,15 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Orchard;
+using Orchard.UI.Resources;
 
 namespace Piedone.ThemeOverride.Services
 {
+    public interface IOverrides
+    {
+        Uri FaviconUri { get; set; }
+        IEnumerable<Uri> StylesheetUris { get; }
+        ICustomResource CustomStyles { get; }
+        IEnumerable<Uri> HeadScriptUris { get; }
+        ICustomResource CustomHeadScript { get; }
+        IEnumerable<Uri> FootScriptUris { get; }
+        ICustomResource CustomFootScript { get; }
+        string CustomPlacementContent { get; }
+    }
+
+    public interface ICustomResource
+    {
+        Uri Uri { get; }
+        string Content { get; }
+    }
+
+
     public interface IThemeOverrideService : IDependency
     {
-        void SaveStyle(string css);
-        string GetStyle();
-        bool TryGetStylePublicUrl(out string publicUrl);
+        void SaveFaviconUri(Uri uri);
+        void SaveStyles(IEnumerable<Uri> stylesheetUris, string customStyles);
+        void SaveScripts(IEnumerable<Uri> scriptUris, string customScript, ResourceLocation location);
+        void SavePlacement(string customPlacement);
+        IOverrides GetOverrides();
     }
 }

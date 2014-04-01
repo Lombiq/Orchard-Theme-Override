@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Orchard.Localization;
+using Orchard.Security;
 using Orchard.UI.Navigation;
-using Orchard.Localization;
 
 namespace Piedone.ThemeOverride
 {
@@ -16,7 +13,7 @@ namespace Piedone.ThemeOverride
         public void GetNavigation(NavigationBuilder builder)
         {
             builder.Add(T("Themes"),
-                menu => menu.Add(T("Theme Override Settings"), "4", item => item.Action("Index", "Admin", new { area = "Piedone.ThemeOverride" }).LocalNav())
+                menu => menu.Add(T("Theme Override Settings"), "4", item => item.Action("Index", "Admin", new { area = "Piedone.ThemeOverride" }).LocalNav().Permission(StandardPermissions.SiteOwner))
             );
         }
     }
