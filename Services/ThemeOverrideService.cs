@@ -18,7 +18,7 @@ namespace Piedone.ThemeOverride.Services
     public class ThemeOverrideService : IThemeOverrideService, IShapeTableEventHandler
     {
         private readonly IStorageProvider _storageProvider;
-        private readonly Work<ISiteService> _siteServiceWork;
+        private readonly ISiteService _siteService;
         private readonly IJsonConverter _jsonConverter;
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
@@ -34,13 +34,13 @@ namespace Piedone.ThemeOverride.Services
 
         public ThemeOverrideService(
             IStorageProvider storageProvider,
-            Work<ISiteService> siteServiceWork,
+            ISiteService siteService,
             IJsonConverter jsonConverter,
             IPlacementProcessor placementProcessor,
             ICacheService cacheService)
         {
             _storageProvider = storageProvider;
-            _siteServiceWork = siteServiceWork;
+            _siteService = siteService;
             _jsonConverter = jsonConverter;
             _placementProcessor = placementProcessor;
             _cacheService = cacheService;
@@ -162,7 +162,7 @@ namespace Piedone.ThemeOverride.Services
 
         private ThemeOverrideSettingsPart GetPart()
         {
-            return _siteServiceWork.Value.GetSiteSettings().As<ThemeOverrideSettingsPart>();
+            return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
         }
 
         private IDictionary<string, IEnumerable<IPlacementDeclaration>> GetPlacements()
