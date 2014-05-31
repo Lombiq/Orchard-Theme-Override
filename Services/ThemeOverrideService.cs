@@ -18,7 +18,7 @@ namespace Piedone.ThemeOverride.Services
     public class ThemeOverrideService : IThemeOverrideService, IShapeTableEventHandler
     {
         private readonly IStorageProvider _storageProvider;
-        private readonly ISiteService _siteService;
+        private readonly Work<ISiteService> _siteServiceWork;
         private readonly IJsonConverter _jsonConverter;
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
@@ -32,15 +32,18 @@ namespace Piedone.ThemeOverride.Services
         private const string PlacementsCacheKey = "Piedone.ThemeOverride.Services.ThemeOverrideService.Placements";
 
 
+        // Not injecting ISiteService as Work<T> would cause an Autofac DependencyResolutionException with "No scope with a Tag 
+        // matching 'work' is visible from the scope in which the instance was requested." The same as with OverridesInjector.
+        // See: https://orchard.codeplex.com/workitem/20738
         public ThemeOverrideService(
             IStorageProvider storageProvider,
-            ISiteService siteService,
+            Work<ISiteService> siteServiceWork,
             IJsonConverter jsonConverter,
             IPlacementProcessor placementProcessor,
             ICacheService cacheService)
         {
             _storageProvider = storageProvider;
-            _siteService = siteService;
+            _siteServiceWork = siteServiceWork;
             _jsonConverter = jsonConverter;
             _placementProcessor = placementProcessor;
             _cacheService = cacheService;
@@ -162,7 +165,7 @@ namespace Piedone.ThemeOverride.Services
 
         private ThemeOverrideSettingsPart GetPart()
         {
-            return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
+            return _siteServiceWork.Value.GetSiteSettings().As<ThemeOverrideSettingsPart>();
         }
 
         private IDictionary<string, IEnumerable<IPlacementDeclaration>> GetPlacements()
