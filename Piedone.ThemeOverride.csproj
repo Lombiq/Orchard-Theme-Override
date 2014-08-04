@@ -99,6 +99,9 @@
     <Compile Include="ViewModels\EditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Styles\theme-override-admin.css.map">
+      <DependentUpon>theme-override-admin.css</DependentUpon>
+    </None>
     <None Include="Styles\theme-override-admin.less" />
   </ItemGroup>
   <PropertyGroup>
