@@ -52,7 +52,7 @@ namespace Piedone.ThemeOverride.Services
 
         public void SaveFaviconUri(Uri uri)
         {
-            GetPart().FaviconUrl = uri.ToString();
+            GetPart().FaviconUrl = uri != null ? uri.ToString() : string.Empty;
         }
 
         public void SaveStyles(IEnumerable<Uri> stylesheetUris, string customStyles)

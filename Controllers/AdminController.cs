@@ -120,7 +120,7 @@ namespace Piedone.ThemeOverride.Controllers
 
             if (!ModelState.IsValid) return View(viewModel);
 
-            if (faviconUri != null) _themeOverrideService.SaveFaviconUri(faviconUri);
+            _themeOverrideService.SaveFaviconUri(faviconUri);
             _themeOverrideService.SaveStyles(stylesheetUris, viewModel.CustomStylesContent);
             _themeOverrideService.SaveScripts(headScriptUris, viewModel.CustomHeadScriptContent, ResourceLocation.Head);
             _themeOverrideService.SaveScripts(footScriptUris, viewModel.CustomFootScriptContent, ResourceLocation.Foot);
