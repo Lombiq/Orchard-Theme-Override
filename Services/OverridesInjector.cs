@@ -22,7 +22,7 @@ namespace Piedone.ThemeOverride.Services
         // Injecting IResourceManager is necessary because on shell start in the end IShapeDisplayEvents are instantiated, thus this class
         // as well. ResourceManager also implementing IUnitOfWorkDependency causes an Autofac DependencyResolutionException with the message
         // "No scope with a Tag matching 'work' is visible from the scope in which the instance was requested.".
-        // See: https://orchard.codeplex.com/workitem/20738
+        // See: https://github.com/OrchardCMS/Orchard/issues/4852
         public OverridesInjector(
             IHttpContextAccessor hca,
             Work<IResourceManager> resourceManagerWork,

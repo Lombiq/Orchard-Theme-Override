@@ -8,7 +8,7 @@ using Orchard.DisplayManagement.Descriptors.ShapePlacementStrategy;
 
 namespace Piedone.ThemeOverride.Services
 {
-    // Mainly copy of ShapePlacementParsingStrategy, see: https://orchard.codeplex.com/workitem/20309
+    // Mainly copy of ShapePlacementParsingStrategy, see: https://github.com/OrchardCMS/Orchard/issues/4138
     public class PlacementProcessor : IPlacementProcessor
     {
         public IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration)
@@ -179,7 +179,7 @@ namespace Piedone.ThemeOverride.Services
     }
 
 
-    // Copied from PlacementFileParser, see: https://orchard.codeplex.com/workitem/20309
+    // Copied from PlacementFileParser, see: https://github.com/OrchardCMS/Orchard/issues/4138
     public class PlacementParser
     {
         public PlacementFile Parse(string placementText)

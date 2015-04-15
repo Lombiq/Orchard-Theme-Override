@@ -34,7 +34,7 @@ namespace Piedone.ThemeOverride.Services
 
         // Not injecting ISiteService as Work<T> would cause an Autofac DependencyResolutionException with "No scope with a Tag 
         // matching 'work' is visible from the scope in which the instance was requested." The same as with OverridesInjector.
-        // See: https://orchard.codeplex.com/workitem/20738
+        // See: https://github.com/OrchardCMS/Orchard/issues/4852
         public ThemeOverrideService(
             IStorageProvider storageProvider,
             Work<ISiteService> siteServiceWork,
