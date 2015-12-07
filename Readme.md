@@ -19,7 +19,7 @@ This Orchard module adds configuration to the admin page that lets override the 
 
 After enabling the module ads a tab to the Themes page on the admin site. You can set up a stylesheet there that will be included last, so you can override any styling there.
 
-### See the [Version history](Docs/VersionHistory.md)
+**See the [Version history](Docs/VersionHistory.md).**
 
 The module is also available for [DotNest](http://dotnest.com/) sites.
 
