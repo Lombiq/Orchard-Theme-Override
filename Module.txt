@@ -1,7 +1,7 @@
 Name: Theme Override
 AntiForgery: enabled
 Author: Piedone
-Website: http://themeoverride.codeplex.com
+Website: https://github.com/Lombiq/Orchard-Theme-Override
 Version: 0.5.2
 OrchardVersion: 1.9.0
 Description: Adds configuration to the admin page that lets override the styling of the current theme
