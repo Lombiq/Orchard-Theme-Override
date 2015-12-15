@@ -14,7 +14,8 @@
     <AssemblyName>Piedone.ThemeOverride</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <MvcBuildViews Condition=" '$(BuildViews)' == 'true' ">true</MvcBuildViews>
-    <FileUpgradeFlags></FileUpgradeFlags>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
@@ -98,9 +99,6 @@
     <Compile Include="ViewModels\EditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Styles\theme-override-admin.css.map">
-      <DependentUpon>theme-override-admin.css</DependentUpon>
-    </None>
     <None Include="Styles\theme-override-admin.less" />
   </ItemGroup>
   <PropertyGroup>
