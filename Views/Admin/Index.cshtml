@@ -9,9 +9,7 @@
 
 <h1>@T("Theme Override Settings")</h1>
 
-<div class="hint">
-    @T("Here you can override the current theme's styling, scripts and placement.")
-</div>
+@Html.Hint(T("Here you can override the current theme's styling, scripts and placement."))
 
 @Html.ValidationSummary()
 
@@ -28,7 +26,7 @@
             <li>
                 @Html.LabelFor(m => m.FaviconUrl, T("Favicon URL"))
                 @Html.TextBoxFor(m => m.FaviconUrl, new { @class = "text large" })
-                <span class="hint">@T("The URL the favicon will be fetched from. Can be a relative or absolute URL.")</span>
+                @Html.Hint(T("The URL the favicon will be fetched from. Can be a relative or absolute URL."))
             </li>
         </ol>
     </fieldset>
@@ -39,12 +37,12 @@
             <li>
                 @Html.LabelFor(m => m.StylesheetUrls, T("Stylesheet URLs"))
                 @Html.TextAreaFor(m => m.StylesheetUrls, new { @class = "text large" })
-                <span class="hint">@T("You can include existing stylesheets (one per line) here. The stylesheets will keep their order. This is meant for external stylesheets but will work for internal ones too. When including external stylesheets it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
+                @Html.Hint(T("You can include existing stylesheets (one per line) here. The stylesheets will keep their order. This is meant for external stylesheets but will work for internal ones too. When including external stylesheets it's advised to use the protocol-relative URL format (i.e. not http:// but //)."))
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomStylesContent, T("Custom styles"))
                 <div id="theme-override-custom-styles-editor">@Model.CustomStylesContent</div>
-                <span class="hint">@T("This stylesheet will be included last, so you can override any styling.")</span>
+                @Html.Hint(T("This stylesheet will be included last, so you can override any styling."))
             </li>
         </ol>
     </fieldset>
@@ -54,22 +52,22 @@
             <li>
                 @Html.LabelFor(m => m.HeadScriptUrls, T("Head script URLs"))
                 @Html.TextAreaFor(m => m.HeadScriptUrls, new { @class = "text large" })
-                <span class="hint">@T("You can include an existing scripts (one per line) here for the head. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
+                @Html.Hint(T("You can include an existing scripts (one per line) here for the head. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //)."))
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomHeadScriptContent, T("Custom head script"))
                 <div id="theme-override-custom-head-script-editor">@Model.CustomHeadScriptContent</div>
-                <span class="hint">@T("This head script will be included last, so you can override any head script behaviour.")</span>
+                @Html.Hint(T("This head script will be included last, so you can override any head script behaviour."))
             </li>
             <li>
                 @Html.LabelFor(m => m.FootScriptUrls, T("Foot script URLs"))
                 @Html.TextAreaFor(m => m.FootScriptUrls, new { @class = "text large" })
-                <span class="hint">@T("You can include an existing scripts (one per line) here for the foot. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //).")</span>
+                @Html.Hint(T("You can include an existing scripts (one per line) here for the foot. The scripts will keep their order. This is meant for external scripts but will work for internal ones too. When including external scripts it's advised to use the protocol-relative URL format (i.e. not http:// but //)."))
             </li>
             <li>
                 @Html.LabelFor(m => m.CustomFootScriptContent, T("Custom foot script"))
                 <div id="theme-override-custom-foot-script-editor">@Model.CustomFootScriptContent</div>
-                <span class="hint">@T("This foot script will be included last, so you can override any head script behaviour.")</span>
+                @Html.Hint(T("This foot script will be included last, so you can override any head script behaviour."))
             </li>
         </ol>
     </fieldset>
@@ -79,13 +77,13 @@
             <li>
                 @Html.LabelFor(m => m.CustomPlacementContent, T("Custom placement declaration"))
                 <div id="theme-override-custom-placement-editor">@Model.CustomPlacementContent</div>
-                <span class="hint">@T("Provide a placement XML declaration (just as in a Placement.info file; you don't have to include the root &lt;Placement&gt; tag). This placement will override anything else. For more information on the format see <a href=\"http://docs.orchardproject.net/Documentation/Understanding-placement-info\">the documentation</a>.")</span>
+                @Html.Hint(T("Provide a placement XML declaration (just as in a Placement.info file; you don't have to include the root &lt;Placement&gt; tag). This placement will override anything else. For more information on the format see <a href=\"http://docs.orchardproject.net/Documentation/Understanding-placement-info\">the documentation</a>."))
             </li>
         </ol>
     </fieldset>
     <fieldset>
         <button class="primaryAction" type="submit" name="submit.Save" value="submit.Save">@T("Save")</button>
-        <span class="hint">@T("If the <a href=\"https://github.com/Lombiq/Combinator\">Combinator module</a> is installed for resource bunding and minification then its cache will be automatically emptied when saving overrides.")</span>
+        @Html.Hint(T("If the <a href=\"https://github.com/Lombiq/Combinator\">Combinator module</a> is installed for resource bunding and minification then its cache will be automatically emptied when saving overrides."))
     </fieldset>
 }
 
