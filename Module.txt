@@ -3,7 +3,7 @@ AntiForgery: enabled
 Author: Piedone
 Website: https://github.com/Lombiq/Orchard-Theme-Override
 Version: 0.5.2
-OrchardVersion: 1.9.1
+OrchardVersion: 1.9.2
 Description: Adds configuration to the admin page that lets override the styling of the current theme
 Features:
     Piedone.ThemeOverride:
