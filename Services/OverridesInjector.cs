@@ -1,35 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Orchard.DisplayManagement.Implementation;
-using Orchard.Environment;
+﻿using Orchard.DisplayManagement.Implementation;
 using Orchard.Mvc;
 using Orchard.UI.Admin;
 using Orchard.UI.Resources;
-using Piedone.ThemeOverride.Services;
+using System.Linq;
 
 namespace Piedone.ThemeOverride.Services
 {
     public class OverridesInjector : IShapeDisplayEvents
     {
         private readonly IHttpContextAccessor _hca;
-        private readonly Work<IResourceManager> _resourceManagerWork;
+        private readonly IResourceManager _resourceManager;
         private readonly IThemeOverrideService _themeOverrideService;
 
 
-        // Injecting IResourceManager is necessary because on shell start in the end IShapeDisplayEvents are instantiated, thus this class
-        // as well. ResourceManager also implementing IUnitOfWorkDependency causes an Autofac DependencyResolutionException with the message
-        // "No scope with a Tag matching 'work' is visible from the scope in which the instance was requested.".
-        // See: https://github.com/OrchardCMS/Orchard/issues/4852
         public OverridesInjector(
             IHttpContextAccessor hca,
-            Work<IResourceManager> resourceManagerWork,
+            IResourceManager resourceManager,
             IThemeOverrideService themeOverrideService)
         {
             _hca = hca;
-            _resourceManagerWork = resourceManagerWork;
+            _resourceManager = resourceManager;
             _themeOverrideService = themeOverrideService;
         }
 
@@ -42,7 +32,7 @@ namespace Piedone.ThemeOverride.Services
             if (httpContext == null) return;
             if (AdminFilter.IsApplied(httpContext.Request.RequestContext)) return;
 
-            var resourceManager = _resourceManagerWork.Value;
+            var resourceManager = _resourceManager;
 
             var overrides = _themeOverrideService.GetOverrides();
             if (overrides.FaviconUri != null)
