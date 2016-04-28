@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Orchard.Environment;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -21,6 +22,7 @@ namespace Piedone.ThemeOverride.Services
         private readonly IJsonConverter _jsonConverter;
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
+        private readonly Work<IThemeOverrideService> _themeOverrideServiceWork; // See comment below.
 
         private const string RootPath = "_PiedoneModules/ThemeOverride/";
         private const string CustomStylesPath = RootPath + "OverridingStyles.css";
@@ -36,13 +38,15 @@ namespace Piedone.ThemeOverride.Services
             ISiteService siteService,
             IJsonConverter jsonConverter,
             IPlacementProcessor placementProcessor,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            Work<IThemeOverrideService> themeOverrideServiceWork)
         {
             _storageProvider = storageProvider;
             _siteService = siteService;
             _jsonConverter = jsonConverter;
             _placementProcessor = placementProcessor;
             _cacheService = cacheService;
+            _themeOverrideServiceWork = themeOverrideServiceWork;
         }
 
 
@@ -143,7 +147,12 @@ namespace Piedone.ThemeOverride.Services
                 var existingPlacement = descriptor.Placement;
                 descriptor.Placement = ctx =>
                 {
-                    var placements = GetPlacements();
+                    // This delegate will be executed at some later time, so we can't just use methods from this
+                    // object directly, since the object will belong to some long disposed work context. So getting
+                    // a fresh instance here. Just wrapping ISiteService into Work<> would also work at the moment but
+                    // GetPlacements() will eventually fail if any of its dependencies try to access any non-trivial
+                    // service from the old work context.
+                    var placements = ((ThemeOverrideService)_themeOverrideServiceWork.Value).GetPlacements();
 
                     if (!placements.ContainsKey(descriptor.ShapeType)) return existingPlacement(ctx);
 
