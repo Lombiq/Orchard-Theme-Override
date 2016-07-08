@@ -102,17 +102,28 @@ namespace Piedone.ThemeOverride.Services
         }
 
 
+
         private void GetShapeType(PlacementShapeLocation shapeLocation, out string shapeType, out string differentiator)
         {
             differentiator = "";
             shapeType = shapeLocation.ShapeType;
+            var separatorLengh = 2;
+            var separatorIndex = shapeType.LastIndexOf("__");
+
             var dashIndex = shapeType.LastIndexOf('-');
-            if (dashIndex > 0 && dashIndex < shapeType.Length - 1)
+            if (dashIndex > separatorIndex)
             {
-                differentiator = shapeType.Substring(dashIndex + 1);
-                shapeType = shapeType.Substring(0, dashIndex);
+                separatorIndex = dashIndex;
+                separatorLengh = 1;
+            }
+
+            if (separatorIndex > 0 && separatorIndex < shapeType.Length - separatorLengh)
+            {
+                differentiator = shapeType.Substring(separatorIndex + separatorLengh);
+                shapeType = shapeType.Substring(0, separatorIndex);
             }
         }
+
 
         private static Func<ShapePlacementContext, bool> BuildPredicate(Func<ShapePlacementContext, bool> predicate, KeyValuePair<string, string> term)
         {
