@@ -65,7 +65,7 @@ namespace Piedone.ThemeOverride.Services
 
             if (_storageProvider.FileExists(CustomStylesPath)) _storageProvider.DeleteFile(CustomStylesPath);
 
-            if (!String.IsNullOrEmpty(customStyles))
+            if (!string.IsNullOrEmpty(customStyles))
             {
                 using (var stream = _storageProvider.CreateFile(CustomStylesPath).OpenWrite())
                 {
@@ -99,7 +99,7 @@ namespace Piedone.ThemeOverride.Services
 
             if (_storageProvider.FileExists(customScriptPath)) _storageProvider.DeleteFile(customScriptPath);
 
-            if (!String.IsNullOrEmpty(customScript))
+            if (!string.IsNullOrEmpty(customScript))
             {
                 using (var stream = _storageProvider.CreateFile(customScriptPath).OpenWrite())
                 {
