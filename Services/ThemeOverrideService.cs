@@ -23,6 +23,7 @@ namespace Piedone.ThemeOverride.Services
         private readonly IPlacementProcessor _placementProcessor;
         private readonly ICacheService _cacheService;
         private readonly Work<IThemeOverrideService> _themeOverrideServiceWork; // See comment below.
+        private readonly IClock _clock;
 
         private const string RootPath = "_PiedoneModules/ThemeOverride/";
         private const string CustomStylesPath = RootPath + "OverridingStyles.css";
@@ -39,7 +40,8 @@ namespace Piedone.ThemeOverride.Services
             IJsonConverter jsonConverter,
             IPlacementProcessor placementProcessor,
             ICacheService cacheService,
-            Work<IThemeOverrideService> themeOverrideServiceWork)
+            Work<IThemeOverrideService> themeOverrideServiceWork,
+            IClock clock)
         {
             _storageProvider = storageProvider;
             _siteService = siteService;
@@ -47,6 +49,7 @@ namespace Piedone.ThemeOverride.Services
             _placementProcessor = placementProcessor;
             _cacheService = cacheService;
             _themeOverrideServiceWork = themeOverrideServiceWork;
+            _clock = clock;
         }
 
 
@@ -74,6 +77,11 @@ namespace Piedone.ThemeOverride.Services
                 }
 
                 part.CustomStylesIsSaved = true;
+                part.CustomStylesModifieddUtc = _clock.UtcNow;
+            }
+            else
+            {
+                part.CustomStylesIsSaved = false;
             }
         }
 
@@ -107,8 +115,27 @@ namespace Piedone.ThemeOverride.Services
                     stream.Write(bytes, 0, bytes.Length);
                 }
 
-                if (location == ResourceLocation.Head) part.CustomHeadScriptIsSaved = true;
-                else part.CustomFootScriptIsSaved = true;
+                if (location == ResourceLocation.Head)
+                {
+                    part.CustomHeadScriptIsSaved = true;
+                    part.CustomHeadScriptModifiedUtc = _clock.UtcNow;
+                }
+                else
+                {
+                    part.CustomFootScriptIsSaved = true;
+                    part.CustomFootScriptModifiedUtc = _clock.UtcNow;
+                }
+            }
+            else
+            {
+                if (location == ResourceLocation.Head)
+                {
+                    part.CustomHeadScriptIsSaved = false;
+                }
+                else
+                {
+                    part.CustomFootScriptIsSaved = false;
+                }
             }
         }
 
@@ -127,13 +154,16 @@ namespace Piedone.ThemeOverride.Services
             if (!string.IsNullOrEmpty(part.FaviconUrl)) overrides.FaviconUri = CreateUri(part.FaviconUrl);
 
             overrides.StylesheetUris = CreateUris(part.StylesheetUrisJson);
-            overrides.CustomStyles = CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath);
+            overrides.CustomStyles = 
+                CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath, part.CustomStylesModifieddUtc);
 
             overrides.HeadScriptUris = CreateUris(part.HeadScriptUrisJson);
-            overrides.CustomHeadScript = CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath);
+            overrides.CustomHeadScript = 
+                CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath, part.CustomHeadScriptModifiedUtc);
 
             overrides.FootScriptUris = CreateUris(part.FootScriptUrisJson);
-            overrides.CustomFootScript = CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath);
+            overrides.CustomFootScript = 
+                CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath, part.CustomFootScriptModifiedUtc);
 
             overrides.CustomPlacementContent = part.CustomPlacementContent;
 
@@ -185,13 +215,18 @@ namespace Piedone.ThemeOverride.Services
                 });
         }
 
-        private CustomResource CreateCustomResource(bool isSaved, string path)
+        private CustomResource CreateCustomResource(bool isSaved, string path, DateTime modifiedUtc)
         {
             if (isSaved && _storageProvider.FileExists(path))
             {
                 return new CustomResource
                 {
-                    UriFactory = new Lazy<Uri>(() => CreateUri(_storageProvider.GetPublicUrl(path))),
+                    UriFactory = new Lazy<Uri>(() =>
+                    {
+                        var uriBuilder = new UriBuilder(CreateUri(_storageProvider.GetPublicUrl(path)));
+                        uriBuilder.Query = "timestamp=" + modifiedUtc.ToFileTimeUtc();
+                        return uriBuilder.Uri;
+                    }),
                     ContentFactory = new Lazy<string>(() =>
                     {
                         using (var stream = _storageProvider.GetFile(path).OpenRead())

@@ -1,4 +1,5 @@
-﻿using Orchard.ContentManagement;
+﻿using System;
+using Orchard.ContentManagement;
 
 namespace Piedone.ThemeOverride.Models
 {
@@ -22,6 +23,12 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.CustomStylesIsSaved, value); }
         }
 
+        public DateTime CustomStylesModifieddUtc
+        {
+            get { return this.Retrieve(x => x.CustomStylesModifieddUtc); }
+            set { this.Store(x => x.CustomStylesModifieddUtc, value); }
+        }
+
         public string HeadScriptUrisJson
         {
             get { return this.Retrieve(x => x.HeadScriptUrisJson); }
@@ -34,6 +41,12 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.CustomHeadScriptIsSaved, value); }
         }
 
+        public DateTime CustomHeadScriptModifiedUtc
+        {
+            get { return this.Retrieve(x => x.CustomHeadScriptModifiedUtc); }
+            set { this.Store(x => x.CustomHeadScriptModifiedUtc, value); }
+        }
+
         public string FootScriptUrisJson
         {
             get { return this.Retrieve(x => x.FootScriptUrisJson); }
@@ -44,6 +57,12 @@ namespace Piedone.ThemeOverride.Models
         {
             get { return this.Retrieve(x => x.CustomFootScriptIsSaved); }
             set { this.Store(x => x.CustomFootScriptIsSaved, value); }
+        }
+
+        public DateTime CustomFootScriptModifiedUtc
+        {
+            get { return this.Retrieve(x => x.CustomFootScriptModifiedUtc); }
+            set { this.Store(x => x.CustomFootScriptModifiedUtc, value); }
         }
 
         public string CustomPlacementContent
