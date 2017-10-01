@@ -25,7 +25,7 @@ namespace Piedone.ThemeOverride.Models
 
         public DateTime CustomStylesModifieddUtc
         {
-            get { return this.Retrieve(x => x.CustomStylesModifieddUtc); }
+            get { return this.Retrieve(x => x.CustomStylesModifieddUtc, DateTime.UtcNow); }
             set { this.Store(x => x.CustomStylesModifieddUtc, value); }
         }
 
@@ -43,7 +43,7 @@ namespace Piedone.ThemeOverride.Models
 
         public DateTime CustomHeadScriptModifiedUtc
         {
-            get { return this.Retrieve(x => x.CustomHeadScriptModifiedUtc); }
+            get { return this.Retrieve(x => x.CustomHeadScriptModifiedUtc, DateTime.UtcNow); }
             set { this.Store(x => x.CustomHeadScriptModifiedUtc, value); }
         }
 
@@ -61,7 +61,7 @@ namespace Piedone.ThemeOverride.Models
 
         public DateTime CustomFootScriptModifiedUtc
         {
-            get { return this.Retrieve(x => x.CustomFootScriptModifiedUtc); }
+            get { return this.Retrieve(x => x.CustomFootScriptModifiedUtc, DateTime.UtcNow); }
             set { this.Store(x => x.CustomFootScriptModifiedUtc, value); }
         }
 

@@ -154,15 +154,15 @@ namespace Piedone.ThemeOverride.Services
             if (!string.IsNullOrEmpty(part.FaviconUrl)) overrides.FaviconUri = CreateUri(part.FaviconUrl);
 
             overrides.StylesheetUris = CreateUris(part.StylesheetUrisJson);
-            overrides.CustomStyles = 
+            overrides.CustomStyles =
                 CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath, part.CustomStylesModifieddUtc);
 
             overrides.HeadScriptUris = CreateUris(part.HeadScriptUrisJson);
-            overrides.CustomHeadScript = 
+            overrides.CustomHeadScript =
                 CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath, part.CustomHeadScriptModifiedUtc);
 
             overrides.FootScriptUris = CreateUris(part.FootScriptUrisJson);
-            overrides.CustomFootScript = 
+            overrides.CustomFootScript =
                 CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath, part.CustomFootScriptModifiedUtc);
 
             overrides.CustomPlacementContent = part.CustomPlacementContent;
