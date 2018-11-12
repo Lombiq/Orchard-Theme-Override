@@ -13,7 +13,7 @@ namespace Piedone.ThemeOverride.Services
     {
         public IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration)
         {
-            var placements = new Dictionary<string, IEnumerable<IPlacementDeclaration>>();
+            var placements = new Dictionary<string, IEnumerable<IPlacementDeclaration>>(StringComparer.OrdinalIgnoreCase);
 
             if (string.IsNullOrEmpty(placementDeclaration)) return placements;
 
