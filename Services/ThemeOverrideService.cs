@@ -76,6 +76,7 @@ namespace Piedone.ThemeOverride.Services
                     stream.Write(bytes, 0, bytes.Length);
                 }
 
+                part.CustomStyles = customStyles;
                 part.CustomStylesIsSaved = true;
                 part.CustomStylesModifieddUtc = _clock.UtcNow;
             }

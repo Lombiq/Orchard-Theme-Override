@@ -17,6 +17,12 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.StylesheetUrisJson, value); }
         }
 
+        public string CustomStyles
+        {
+            get { return this.Retrieve(x => x.CustomStyles); }
+            set { this.Store(x => x.CustomStyles, value); }
+        }
+
         public bool CustomStylesIsSaved
         {
             get { return this.Retrieve(x => x.CustomStylesIsSaved); }
