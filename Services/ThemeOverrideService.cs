@@ -237,7 +237,12 @@ namespace Piedone.ThemeOverride.Services
                         {
                             using (var streamReader = new StreamReader(stream))
                             {
-                                return streamReader.ReadToEnd();
+                                string content = streamReader.ReadToEnd();
+                                if(content.Equals(value))
+                                {
+                                    return content;   
+                                }
+                                return value;
                             }
                         }
                     })
