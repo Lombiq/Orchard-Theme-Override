@@ -68,10 +68,7 @@ namespace Piedone.ThemeOverride.Services
 
             if (_storageProvider.FileExists(CustomStylesPath)) _storageProvider.DeleteFile(CustomStylesPath);
 
-            if (string.IsNullOrEmpty(customStyles))
-                customStyles = "";
-
-            if (!customStyles.Equals(part.CustomStyles))
+            if (!string.IsNullOrEmpty(customStyles))
             {
                 using (var stream = _storageProvider.CreateFile(CustomStylesPath).OpenWrite())
                 {
@@ -159,15 +156,15 @@ namespace Piedone.ThemeOverride.Services
 
             overrides.StylesheetUris = CreateUris(part.StylesheetUrisJson);
             overrides.CustomStyles =
-                CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath, part.CustomStylesModifieddUtc, part.CustomStyles);
+                CreateCustomResource(part.CustomStylesIsSaved, CustomStylesPath, part.CustomStylesModifieddUtc);
 
             overrides.HeadScriptUris = CreateUris(part.HeadScriptUrisJson);
             overrides.CustomHeadScript =
-                CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath, part.CustomHeadScriptModifiedUtc, part.HeadScriptUrisJson);
+                CreateCustomResource(part.CustomHeadScriptIsSaved, CustomHeadScriptPath, part.CustomHeadScriptModifiedUtc);
 
             overrides.FootScriptUris = CreateUris(part.FootScriptUrisJson);
             overrides.CustomFootScript =
-                CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath, part.CustomFootScriptModifiedUtc, part.FootScriptUrisJson);
+                CreateCustomResource(part.CustomFootScriptIsSaved, CustomFootScriptPath, part.CustomFootScriptModifiedUtc);
 
             overrides.CustomPlacementContent = part.CustomPlacementContent;
 
@@ -219,7 +216,7 @@ namespace Piedone.ThemeOverride.Services
                 });
         }
 
-        private CustomResource CreateCustomResource(bool isSaved, string path, DateTime modifiedUtc, string value)
+        private CustomResource CreateCustomResource(bool isSaved, string path, DateTime modifiedUtc)
         {
             if (isSaved && _storageProvider.FileExists(path))
             {
@@ -237,24 +234,14 @@ namespace Piedone.ThemeOverride.Services
                         {
                             using (var streamReader = new StreamReader(stream))
                             {
-                                string content = streamReader.ReadToEnd();
-                                if(content.Equals(value))
-                                {
-                                    return content;   
-                                }
-                                return value;
+                                return streamReader.ReadToEnd();
                             }
                         }
                     })
                 };
             }
             else
-            {
-                return new CustomResource()
-                {
-                    ContentFactory = new Lazy<string>(() => value)
-                };
-            }
+                return new CustomResource();
         }
 
         private IEnumerable<Uri> CreateUris(string urlsJson)
