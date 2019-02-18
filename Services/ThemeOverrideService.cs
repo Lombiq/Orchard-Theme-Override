@@ -240,8 +240,7 @@ namespace Piedone.ThemeOverride.Services
                     })
                 };
             }
-            else
-                return new CustomResource();
+            else return new CustomResource();
         }
 
         private IEnumerable<Uri> CreateUris(string urlsJson)
