@@ -120,11 +120,13 @@ namespace Piedone.ThemeOverride.Services
                 {
                     part.CustomHeadScriptIsSaved = true;
                     part.CustomHeadScriptModifiedUtc = _clock.UtcNow;
+                    part.CustomHeadScript = customScript;
                 }
                 else
                 {
                     part.CustomFootScriptIsSaved = true;
                     part.CustomFootScriptModifiedUtc = _clock.UtcNow;
+                    part.CustomFootScript = customScript;
                 }
             }
             else

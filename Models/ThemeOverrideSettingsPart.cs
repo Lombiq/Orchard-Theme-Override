@@ -41,6 +41,12 @@ namespace Piedone.ThemeOverride.Models
             set { this.Store(x => x.HeadScriptUrisJson, value); }
         }
 
+        public string CustomHeadScript
+        {
+            get { return this.Retrieve(x => x.CustomHeadScript); }
+            set { this.Store(x => x.CustomHeadScript, value); }
+        }
+
         public bool CustomHeadScriptIsSaved
         {
             get { return this.Retrieve(x => x.CustomHeadScriptIsSaved); }
@@ -57,6 +63,12 @@ namespace Piedone.ThemeOverride.Models
         {
             get { return this.Retrieve(x => x.FootScriptUrisJson); }
             set { this.Store(x => x.FootScriptUrisJson, value); }
+        }
+
+        public string CustomFootScript
+        {
+            get { return this.Retrieve(x => x.CustomFootScript); }
+            set { this.Store(x => x.CustomFootScript, value); }
         }
 
         public bool CustomFootScriptIsSaved
