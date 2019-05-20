@@ -27,16 +27,6 @@ namespace Piedone.ThemeOverride.Drivers
 
         protected override void Importing(ThemeOverrideSettingsPart part, ImportContentContext context)
         {
-            var partName = part.PartDefinition.Name;
-            
-            context.ImportAttribute(partName, nameof(part.CustomStyles), value => part.CustomStyles = value);
-            context.ImportAttribute(partName, nameof(part.StylesheetUrisJson), value => part.StylesheetUrisJson = value);
-            context.ImportAttribute(partName, nameof(part.CustomHeadScript), value => part.CustomHeadScript = value);
-            context.ImportAttribute(partName, nameof(part.HeadScriptUrisJson), value => part.HeadScriptUrisJson = value);
-            context.ImportAttribute(partName, nameof(part.CustomFootScript), value => part.CustomFootScript = value);
-            context.ImportAttribute(partName, nameof(part.FootScriptUrisJson), value => part.FootScriptUrisJson = value);
-            context.ImportAttribute(partName, nameof(part.CustomPlacementContent), value => part.CustomPlacementContent = value);
-
             if (!string.IsNullOrEmpty(part.FaviconUrl))
             {
                 if (TryCreateUri(part.FaviconUrl, out Uri faviconUri))
