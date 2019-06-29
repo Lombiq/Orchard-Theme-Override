@@ -24,6 +24,15 @@ namespace Piedone.ThemeOverride.Drivers
             T = NullLocalizer.Instance;
         }
 
+        protected override void Exporting(ThemeOverrideSettingsPart part, ExportContentContext context)
+        {
+            var element = context.Element(part.PartDefinition.Name);
+
+            element.SetAttributeValue("CustomStyles", _themeOverrideService.GetOverrides().CustomStyles.Content);
+            element.SetAttributeValue("CustomHeadScript", _themeOverrideService.GetOverrides().CustomHeadScript.Content);
+            element.SetAttributeValue("CustomFootScript", _themeOverrideService.GetOverrides().CustomFootScript.Content);
+        }
+
 
         protected override void Importing(ThemeOverrideSettingsPart part, ImportContentContext context)
         {
@@ -71,9 +80,18 @@ namespace Piedone.ThemeOverride.Drivers
                 }
             }
 
-            _themeOverrideService.SaveStyles(stylesheetUris, part.CustomStyles);
-            _themeOverrideService.SaveScripts(headScriptUris, part.CustomHeadScript, ResourceLocation.Head);
-            _themeOverrideService.SaveScripts(footScriptUris, part.CustomFootScript, ResourceLocation.Foot);
+            var partName = part.PartDefinition.Name;
+            string customStyles = "";
+            string customHeadScript = "";
+            string customFootScript = "";
+
+            context.ImportAttribute(partName, "CustomStyles", value => customStyles = value);
+            context.ImportAttribute(partName, "CustomHeadScript", value => customHeadScript = value);
+            context.ImportAttribute(partName, "CustomFootScript", value => customFootScript = value);
+
+            _themeOverrideService.SaveStyles(stylesheetUris, customStyles);
+            _themeOverrideService.SaveScripts(headScriptUris, customHeadScript, ResourceLocation.Head);
+            _themeOverrideService.SaveScripts(footScriptUris, customFootScript, ResourceLocation.Foot);
             _themeOverrideService.SavePlacement(part.CustomPlacementContent);
         }
 

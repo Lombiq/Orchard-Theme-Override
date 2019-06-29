@@ -76,7 +76,6 @@ namespace Piedone.ThemeOverride.Services
                     stream.Write(bytes, 0, bytes.Length);
                 }
 
-                part.CustomStyles = customStyles;
                 part.CustomStylesIsSaved = true;
                 part.CustomStylesModifieddUtc = _clock.UtcNow;
             }
@@ -120,13 +119,11 @@ namespace Piedone.ThemeOverride.Services
                 {
                     part.CustomHeadScriptIsSaved = true;
                     part.CustomHeadScriptModifiedUtc = _clock.UtcNow;
-                    part.CustomHeadScript = customScript;
                 }
                 else
                 {
                     part.CustomFootScriptIsSaved = true;
                     part.CustomFootScriptModifiedUtc = _clock.UtcNow;
-                    part.CustomFootScript = customScript;
                 }
             }
             else
