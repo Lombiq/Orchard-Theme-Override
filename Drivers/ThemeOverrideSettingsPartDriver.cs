@@ -27,10 +27,11 @@ namespace Piedone.ThemeOverride.Drivers
         protected override void Exporting(ThemeOverrideSettingsPart part, ExportContentContext context)
         {
             var element = context.Element(part.PartDefinition.Name);
+            var overrides = _themeOverrideService.GetOverrides();
 
-            element.SetAttributeValue("CustomStyles", _themeOverrideService.GetOverrides().CustomStyles.Content);
-            element.SetAttributeValue("CustomHeadScript", _themeOverrideService.GetOverrides().CustomHeadScript.Content);
-            element.SetAttributeValue("CustomFootScript", _themeOverrideService.GetOverrides().CustomFootScript.Content);
+            element.SetAttributeValue("CustomStyles", overrides.CustomStyles.Content);
+            element.SetAttributeValue("CustomHeadScript", overrides.CustomHeadScript.Content);
+            element.SetAttributeValue("CustomFootScript", overrides.CustomFootScript.Content);
         }
 
 
