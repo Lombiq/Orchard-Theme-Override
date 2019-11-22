@@ -1,19 +1,19 @@
-﻿using System;
+﻿using Orchard.DisplayManagement.Descriptors;
+using Orchard.DisplayManagement.Descriptors.ShapePlacementStrategy;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml.Linq;
-using Orchard.DisplayManagement.Descriptors;
-using Orchard.DisplayManagement.Descriptors.ShapePlacementStrategy;
 
 namespace Piedone.ThemeOverride.Services
 {
     // Mainly copy of ShapePlacementParsingStrategy, see: https://github.com/OrchardCMS/Orchard/issues/4138
     public class PlacementProcessor : IPlacementProcessor
     {
-        public IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration)
+        public IDictionary<string, IPlacementDeclaration> Process(string placementDeclaration)
         {
-            var placements = new Dictionary<string, IEnumerable<IPlacementDeclaration>>(StringComparer.OrdinalIgnoreCase);
+            var placements = new Dictionary<string, IPlacementDeclaration>(StringComparer.OrdinalIgnoreCase);
 
             if (string.IsNullOrEmpty(placementDeclaration)) return placements;
 
@@ -33,6 +33,7 @@ namespace Piedone.ThemeOverride.Services
             {
                 // Invert the tree into a list of leaves and the stack
                 var entries = DrillDownShapeLocations(placementFile.Nodes, Enumerable.Empty<PlacementMatch>());
+
                 foreach (var entry in entries)
                 {
                     var shapeLocation = entry.Item1;
@@ -82,19 +83,12 @@ namespace Piedone.ThemeOverride.Services
                         }
                     }
 
-                    if (!placements.ContainsKey(shapeType))
-                    {
-                        placements[shapeType] = Enumerable.Empty<IPlacementDeclaration>();
-                    }
-
-                    placements[shapeType] = placements[shapeType].Concat(new[]
-                    {
+                    placements[shapeType] =
                         new PlacementDeclaration
                         {
                             Predicate = predicate,
                             Placement = placement
-                        }
-                    });
+                        };
                 }
             }
 

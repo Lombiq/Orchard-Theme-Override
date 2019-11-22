@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Orchard;
+﻿using Orchard;
 using Orchard.DisplayManagement.Descriptors;
+using System;
+using System.Collections.Generic;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -14,6 +14,6 @@ namespace Piedone.ThemeOverride.Services
 
     public interface IPlacementProcessor : IDependency
     {
-        IDictionary<string, IEnumerable<IPlacementDeclaration>> Process(string placementDeclaration);
+        IDictionary<string, IPlacementDeclaration> Process(string placementDeclaration);
     }
 }

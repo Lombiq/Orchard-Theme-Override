@@ -1,6 +1,7 @@
 ﻿using Orchard.Caching.Services;
 using Orchard.ContentManagement;
 using Orchard.DisplayManagement.Descriptors;
+using Orchard.Environment;
 using Orchard.FileSystems.Media;
 using Orchard.Services;
 using Orchard.Settings;
@@ -11,7 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Orchard.Environment;
 
 namespace Piedone.ThemeOverride.Services
 {
@@ -187,10 +187,8 @@ namespace Piedone.ThemeOverride.Services
                     if (!placements.ContainsKey(descriptor.ShapeType)) return existingPlacement(ctx);
 
                     var declarations = placements[descriptor.ShapeType];
-                    foreach (var declaration in declarations)
-                    {
-                        if (declaration.Predicate(ctx)) return declaration.Placement;
-                    }
+
+                    if (declarations.Predicate(ctx)) return declarations.Placement; // tehát hamarabb tér vissza nem veszi figyelembe azt h a 2. az specifikusabb.                    
 
                     return existingPlacement(ctx);
                 };
@@ -203,13 +201,13 @@ namespace Piedone.ThemeOverride.Services
             return _siteService.GetSiteSettings().As<ThemeOverrideSettingsPart>();
         }
 
-        private IDictionary<string, IEnumerable<IPlacementDeclaration>> GetPlacements()
+        private IDictionary<string, IPlacementDeclaration> GetPlacements()
         {
             return _cacheService.Get(PlacementsCacheKey, () =>
                 {
                     var customPlacement = GetPart().CustomPlacementContent;
 
-                    if (string.IsNullOrEmpty(customPlacement)) return new Dictionary<string, IEnumerable<IPlacementDeclaration>>();
+                    if (string.IsNullOrEmpty(customPlacement)) return new Dictionary<string, IPlacementDeclaration>();
 
                     return _placementProcessor.Process(customPlacement);
                 });
