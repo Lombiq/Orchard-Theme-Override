@@ -126,10 +126,10 @@
     <Compile Include="ViewModels\EditorViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="compilerconfig.json" />
-    <None Include="compilerconfig.json.defaults">
+    <Content Include="compilerconfig.json" />
+    <Content Include="compilerconfig.json.defaults">
       <DependentUpon>compilerconfig.json</DependentUpon>
-    </None>
+    </Content>
     <None Include="Styles\theme-override-admin.less" />
   </ItemGroup>
   <PropertyGroup>
@@ -160,6 +160,6 @@
   </Target>
   <ProjectExtensions />
   <ItemGroup>
-    <Content Include="packages.config" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
